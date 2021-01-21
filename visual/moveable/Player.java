@@ -18,9 +18,9 @@ public class Player extends Moveable {
 	public void update(int tick) {
 		super.update(tick);
 		if(getDisplay().isKey(KeyEvent.VK_LEFT))
-			turn(-3);
+			turn(-7);
 		if(getDisplay().isKey(KeyEvent.VK_RIGHT))
-			turn(3);
+			turn(7);
 		
 		if(!isVisible()) {
 			if(gap == 0) {

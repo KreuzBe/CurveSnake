@@ -16,7 +16,7 @@ public class Enemy extends Moveable {
 	public Enemy(int x, int y, int vx, int vy, int speed,Display display, Moveable target) {
 		super(x, y, vx, vy, speed, display ,TYPE_NPC);
 		this.target = target;
-		setDrawByte(0b10);
+		//setDrawByte(0b10);
 		//addEnemyByte(0b10);
 	}
 	
@@ -29,8 +29,8 @@ public class Enemy extends Moveable {
 		int[][] map = getDisplay().getMap();
 		boolean found = false;
 		
-		int tx = (int) (getX() + (2*getSpeed()) * getVX());
-		int ty = (int) (getY() + (2*getSpeed())* getVY());
+		int tx = (int) (getX() + (getSpeed() + 3) * getVX());
+		int ty = (int) (getY() + (getSpeed()+ 3)* getVY());
 		int x = (int) (target.getX() + 50 * target.getVX());
 		int y = (int) (target.getY() + 50 * target.getVY());
 		
@@ -38,6 +38,15 @@ public class Enemy extends Moveable {
 	
 		Node node = new Node(x, y, 0, Math.sqrt((x-tx)*(x-tx) + (y-ty) * (y-ty)), null);
 		openNodes.add(node);
+		
+		for(Node n : lastWay) {
+			n.closed = true;
+			n.way = Integer.MAX_VALUE;
+			n.distance =  Math.sqrt((n.x-tx)*(n.x-tx) + (n.y-ty)*(n.y-ty));
+			n.prevNode = null;
+			openNodes.add(n);
+		}
+		lastWay.clear();
 		
 		Node[][] surroundingNodes = new Node[3][3];
 		
@@ -88,25 +97,20 @@ public class Enemy extends Moveable {
 							node.nextNode = nn;
 							openNodes.add(nn);
 						} else if(!surroundingNodes[ix+1][iy+1].isClosed()){
-							if(node.way + 1 <= surroundingNodes[ix+1][iy+1].way){
-								if(ix != 0 && iy != 0)
-									surroundingNodes[ix+1][iy+1].way = node.way + 1;
-								else
-									surroundingNodes[ix+1][iy+1].way = node.way + 2;
-								surroundingNodes[ix+1][iy+1].prevNode = node;
-							}
+							//if(node.way + 1 < surroundingNodes[ix+1][iy+1].way){
+							//	surroundingNodes[ix+1][iy+1].way = node.way + 1;
+							//	surroundingNodes[ix+1][iy+1].prevNode = node;
+							//}
 						}
-					}else {
-						//node.close();
-						//continue main;
 					}
 				}
 			}
 			
 			node.close();
+			lastWay.add(node);
 			getDisplay().fg.setColor(Color.GREEN);
 			getDisplay().fg.drawRect(node.x, node.y, 1,1);
-			
+			getDisplay().repaint();
 		}
 		
 		getDisplay().fg.setColor(Color.ORANGE);
@@ -116,16 +120,49 @@ public class Enemy extends Moveable {
 		while(node.prevNode != null) {
 			c++;
 			getDisplay().fg.drawRect(node.x, node.y, 1,1);
+			lastWay.remove(node);
 			node = node.prevNode;
 		}
 		node = oNode;
 		
-		for(int i = 0; i < 3 && node.prevNode != null; i++){
+		for(int i = 0; i < getSpeed() && node.prevNode != null; i++){
 			node = node.prevNode;
 		}
 			
 		getDisplay().fg.setColor(Color.BLUE);
 		getDisplay().fg.drawRect(node.x-1, node.y-1, 3,3);
+		
+		int cW = 0;
+		double nx = 0;
+		double ny = 0;
+		for(int ix = -500; ix <= 500; ix++){
+			for(int iy = -500; iy <= 500; iy++) {
+				if((ix*ix+iy*iy) < 1000 && ((map[(int) getX() + ix][(int) getY() + iy] & 0b10 ) != 0)) {	
+					cW++;
+					nx += ix;
+					ny += iy;
+					getDisplay().fg.setColor(Color.ORANGE);
+					getDisplay().fg.drawRect((int)getX()+ix,(int)getY()+iy, 1,1);
+				}
+			}
+		}
+		
+		if(cW != 0) {
+			nx/=cW;
+			ny/=cW;
+			//System.out.println(x + " " + y);
+			
+			double atan = Math.atan(ny/nx);
+			double f = 180;
+			if(Math.abs(atan) > Math.toRadians(f))
+				atan = Math.signum(atan) * Math.toRadians(f);
+			
+				
+			turnRadians((float) atan);
+			
+			return;
+		}
+		
 		
 		double dx = node.x - this.getX();
 		double dy = node.y - this.getY();
@@ -139,18 +176,71 @@ public class Enemy extends Moveable {
 			deltaAngle = angleTarget - angleMove;
 		
 			
-	//	if(Math.abs(deltaAngle) > Math.toRadians(6)) // TODO Maximal angle as var (here 3)
-	//		deltaAngle = Math.signum(deltaAngle) * Math.toRadians(6);
+		//if(Math.abs(deltaAngle) > Math.toRadians(3)) // TODO Maximal angle as var (here 3)
+		//	deltaAngle = Math.signum(deltaAngle) * Math.toRadians(3);
 			
 		turnRadians((float) deltaAngle);
+	}
+	
+	private void myWay() {
+		simplifyVector();
+		int[][] map = getDisplay().getMap();
+		
+		int cW = 0;
+		double x = 0;
+		double y = 0;
+		for(int ix = -500; ix <= 500; ix++){
+			for(int iy = -500; iy <= 500; iy++) {
+				if((ix*ix+iy*iy) < 1000 && ((map[(int) getX() + ix][(int) getY() + iy] & 0b10 ) != 0)) {	
+					cW++;
+					x += ix;
+					y += iy;
+					getDisplay().fg.setColor(Color.ORANGE);
+					getDisplay().fg.drawRect((int)getX()+ix,(int)getY()+iy, 1,1);
+				}
+			}
+		}
+		
+		if(cW != 0) {
+			x/=cW;
+			y/=cW;
+			//System.out.println(x + " " + y);
+			
+			double atan = Math.atan(y/x);
+			double f = 7;
+			if(Math.abs(atan) > Math.toRadians(f))
+				atan = Math.signum(atan) * Math.toRadians(f);
+			
+			setVX((float)-Math.sin(atan));
+			setVY((float)-Math.cos(atan));
+			
+			return;
+		}
+		
+		double dx = (target.getX() + 50 * target.getVX()) - this.getX();
+		double dy = (target.getY() + 50 * target.getVY()) - this.getY();
+		double angleTarget = Math.atan( dy / dx );
+		double angleMove = Math.atan(this.getVY() / this.getVX());
+		double deltaAngle;
 		
 		
 		
+		if(Math.signum(dx) != Math.signum(getVX())) // Wrong direction lol
+			deltaAngle = angleMove;
+		else
+			deltaAngle = angleTarget - angleMove;
+			
+		if(Math.abs(deltaAngle) > Math.toRadians(6)) // TODO Maximal angle as var (here 3)
+			deltaAngle = Math.signum(deltaAngle) * Math.toRadians(6);
+			
+		turnRadians((float) deltaAngle);
 	}
 	
 	@Override
 	public void update(int tick) {
 		target.simplifyVector();
+		
+		//myWay();
 		
 		aStarTest();
 		
