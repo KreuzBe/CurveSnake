@@ -11,6 +11,9 @@ import visual.Moveable;
 public class Display extends JPanel implements KeyListener {
 
 	private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
+	private static final int WIDTH = 1600;
+	private static final int HEIGHT = 900;
+	
 	private Loop loop;
 	private JFrame frame;
 	private ArrayList<Moveable> moveables;
@@ -29,12 +32,12 @@ public class Display extends JPanel implements KeyListener {
 	public Display() {
 		moveables = new ArrayList();
 		removedMoveables = new ArrayList();
-		loop = new Loop(30, this::update);
+		loop = new Loop(50, this::update);
 		
 		frame = new JFrame();
 		frame.setBounds(0, 0, 1600, 900);
 		frame.setLocationRelativeTo(null);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.addKeyListener(this);
@@ -42,20 +45,31 @@ public class Display extends JPanel implements KeyListener {
 	
 		frame.setVisible(true);
 		repaint(); // causes JPanel to resize
-		map = new int[(int)TOOLKIT.getScreenSize().getWidth()][(int)TOOLKIT.getScreenSize().getHeight()];
+		map = new int[WIDTH][HEIGHT];
 		
-		visualMap = new BufferedImage((int)TOOLKIT.getScreenSize().getWidth(), (int)TOOLKIT.getScreenSize().getHeight(),BufferedImage.TYPE_INT_RGB);
-		foreground = new BufferedImage((int)TOOLKIT.getScreenSize().getWidth(), (int)TOOLKIT.getScreenSize().getHeight(),BufferedImage.TYPE_INT_ARGB);
+		for(int x= 0; x  < WIDTH; x++){
+			for(int i = 50; i <= 5; i++){
+				map[x][i] = 0b1; // TODO WALL
+			}
+		}
+		for(int y = 0; y < HEIGHT; y ++) {
+			for(int i = 50; i <= 5; i++){
+				map[i][y] = 0b1; // TODO WALL
+			}
+		}
+		
+		visualMap = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_RGB);
+		foreground = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_ARGB);
 		g = visualMap.createGraphics();
 		fg = foreground.createGraphics();
-		System.out.println(this.getWidth());
+		
 	}
 	
 	private void update(int tick){
 		
 		paintMap();
 		
-		foreground = new BufferedImage((int)TOOLKIT.getScreenSize().getWidth(), (int)TOOLKIT.getScreenSize().getHeight(),BufferedImage.TYPE_INT_ARGB);
+		foreground = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_ARGB);
 		fg = foreground.createGraphics();
 		
 		frame.setTitle(tick + " " + moveables.size());

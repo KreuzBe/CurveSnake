@@ -12,6 +12,8 @@ public class Player extends Moveable {
 		super(x, y, vx, vy, speed, display,Moveable.TYPE_PLAYER);
 		setDrawByte(0b10);
 		addEnemyByte(0b10);
+		addEnemyByte(0b1);
+		addEnemyByte(0b100);
 	}
 	
 	@Override
@@ -30,7 +32,7 @@ public class Player extends Moveable {
 			}
 		}else if(Math.random() < 0.01) {
 			setVisible(false);
-			gap = 0;
+			gap = 10;
 		}
 		
 	}

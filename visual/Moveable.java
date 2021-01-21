@@ -52,8 +52,8 @@ public class Moveable {
 				return;
 			
 		for(int i : enemyBytes) {
-			if((map[(int)x][(int)y] & 0b10) == 0b10) {
-				System.out.println("STOP");
+			if((map[(int)x][(int)y] & i) == i) {
+				System.out.println("STOP: " + this);
 				System.exit(0);
 			}
 		}
@@ -175,6 +175,10 @@ public class Moveable {
 	
 	public void addEnemyByte(int b) {
 		enemyBytes.add(b);
+	}
+	
+	public ArrayList<Integer> getEnemyBytes() {
+		return enemyBytes;
 	}
 	
 	public void removeEnemyByte(Integer b) {
