@@ -12,10 +12,10 @@ public class Client {
     private String host;
     private int port;
     private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
-    private Consumer<String> inputConsumer;
+    private Consumer<Object> inputConsumer;
 
     public Client(String host, int port) {
         this.host = host;
@@ -23,8 +23,8 @@ public class Client {
         try {
             socket = new Socket(host, port);
 
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
 
             listeningThread = new Thread(this::listen, "Listening Thread");
             listeningThread.setDaemon(true);
@@ -34,7 +34,7 @@ public class Client {
         }
     }
 
-    public void setInputConsumer(Consumer<String> inputConsumer) {
+    public void setInputConsumer(Consumer<Object> inputConsumer) {
         this.inputConsumer = inputConsumer;
     }
 
@@ -46,11 +46,12 @@ public class Client {
                 break;
             try {
                 if (inputConsumer != null)
-                    inputConsumer.accept(in.readLine());
+                    inputConsumer.accept(in.readObject());
                 else
-                    System.out.println(">> " + in.readLine());
-            } catch (IOException e) {
+                    System.out.println(">> " + in.readObject().toString());
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                isRunning = false;
                 break;
             }
         }
@@ -61,11 +62,12 @@ public class Client {
         }
     }
 
-    public void write(String s) {
-        out.println(s);
+    public void write(Object o) throws IOException {
+        out.writeObject(o);
+        out.flush();
     }
 
-    public PrintWriter getPrintWriter() {
+    public ObjectOutputStream getOut() {
         return out;
     }
 }

@@ -42,7 +42,7 @@ public class Main extends Display {
     }
 
     public static void main(String[] args) {
-        Client cl = new Client("192.168.2.121", 4444);
+        Server cl = new Server(4444);
 
         new Main();
     }

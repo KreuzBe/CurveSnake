@@ -54,23 +54,12 @@ public class PowerUp extends Moveable {
         }
 
         if ((code & (Display.BYTE_POWERUP_MIN << 2)) != 0) { // Bomb
-            int radius = 200 + (int) (Math.random() * 200);
-            moveable.getDisplay().fg.setColor(Color.WHITE);
-            moveable.getDisplay().fg.fillOval((int) moveable.getX() - radius, (int) moveable.getY() - radius, 2 * radius, 2 * radius);
-            for (int rx = -radius; rx <= radius; rx++) {
-                for (int ry = -radius; ry <= radius; ry++) {
-                    try {
-                        moveable.getDisplay().unsetMapByte((int) (moveable.getX() + rx), (int) (moveable.getY() + ry), Display.BYTE_NPC | Display.BYTE_PLAYER);
-                    } catch (Exception ignore) {
-                    }
+            moveable.clear();
+
+            for (int x = 0; x < Display.WIDTH; x++) {
+                for (int y = 0; y < Display.HEIGHT; y++) {
+                    moveable.getDisplay().unsetMapByte(x, y, moveable.getDrawByte());
                 }
-            }
-            for (Moveable mo : moveable.getDisplay().getMoveables()) {
-                mo.getGraphics().setColor(Display.bgColor);
-                mo.getGraphics().setPaint(new Color(0f, 0f, 1f, 0.0f));
-                mo.getGraphics().setXORMode(mo.getTraceColor());
-                mo.getGraphics().fillOval((int) moveable.getX() - radius, (int) moveable.getY() - radius, 2 * radius, 2 * radius);
-                mo.getGraphics().setPaintMode();
             }
 
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);

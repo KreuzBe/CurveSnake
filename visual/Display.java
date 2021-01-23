@@ -59,17 +59,17 @@ public class Display extends JPanel implements KeyListener {
         loop = new Loop(40, this::update);
 
         frame = new JFrame();
-        //  frame.setUndecorated(true);
+        frame.setUndecorated(true);
         frame.setBounds(0, 0, 2 * WIDTH, 2 * HEIGHT);
         frame.setLocationRelativeTo(null);
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setResizable(false);
+        frame.setResizable(false);
         frame.addKeyListener(this);
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         frame.add(this);
 
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         repaint(); // causes JPanel to resize
