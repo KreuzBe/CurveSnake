@@ -187,6 +187,10 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void addMoveable(Moveable mo) {
+        for (Moveable m : addedMoveables) {
+            if (mo.getDrawByte() == m.getDrawByte())
+                return;
+        }
         for (Moveable m : moveables) {
             if (mo.getDrawByte() == m.getDrawByte())
                 return;
