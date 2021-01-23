@@ -398,6 +398,7 @@ public class Display extends JPanel implements KeyListener {
     public void gameOver(Player player, int code) {
         System.out.println("THE GAME IS OVER");
         isGameOver = true;
+        stop();
         try {
             if (isServer) {
                 server.send(createGameInfo());
@@ -407,7 +408,6 @@ public class Display extends JPanel implements KeyListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        stop();
     }
 }
 

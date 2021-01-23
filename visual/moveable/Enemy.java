@@ -36,7 +36,8 @@ public class Enemy extends Moveable {
 
     private void loopAction(int tick) {
         try {
-            pathFind();
+            if (target != null)
+                pathFind();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,7 +209,21 @@ public class Enemy extends Moveable {
         if (getDisplay().getPowerUps().size() > 0) {
             setTarget(getDisplay().getPowerUps().get(0));
         } else {
-            setTarget(mainTarget);
+            if (mainTarget == null) {
+                Moveable newTarget = null;
+                for (Moveable mo : getDisplay().getMoveables()) {
+                    if (mo != this) {
+                        newTarget = mo;
+                        return;
+                    }
+                }
+                if (newTarget == null) {
+                    return;
+                } else
+                    setTarget(newTarget);
+            } else {
+                setTarget(mainTarget);
+            }
         }
 
         try {
