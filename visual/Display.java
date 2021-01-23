@@ -110,6 +110,7 @@ public class Display extends JPanel implements KeyListener {
 
         frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.requestFocus();
         frame.setVisible(true);
 
         repaint(); // causes JPanel to resize
