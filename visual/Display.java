@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 import util.Loop;
+import util.net.GameInfo;
 import visual.Moveable;
 import visual.moveable.Enemy;
 
@@ -213,6 +214,14 @@ public class Display extends JPanel implements KeyListener {
             }
         }
         powerUps.remove(powerUp);
+    }
+
+    public GameInfo createGameInfo() {
+        GameInfo gi = new GameInfo();
+        for (Moveable mo : moveables) {
+            gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte());
+        }
+        return gi;
     }
 
     public boolean isRunning() {

@@ -7,6 +7,7 @@ import visual.moveable.Enemy;
 import visual.moveable.Player;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class Main extends Display {
 
@@ -42,8 +43,15 @@ public class Main extends Display {
     }
 
     public static void main(String[] args) {
-        Server cl = new Server(4444);
+        Client cl = new Client("192.168.2.121", 4444);
 
-        new Main();
+        try {
+            cl.write(new Main().createGameInfo());
+            System.out.println("Hello World");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //new Main();
     }
 }

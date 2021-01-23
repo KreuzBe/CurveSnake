@@ -47,10 +47,10 @@ public class Client {
             try {
                 if (inputConsumer != null)
                     inputConsumer.accept(in.readObject());
-                else
-                    System.out.println(">> " + in.readObject().toString());
+                //   else
+                //     System.out.println(">> " + in.readObject().toString());
             } catch (IOException | ClassNotFoundException e) {
-                //  e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("Connection lost");
                 isRunning = false;
                 break;
