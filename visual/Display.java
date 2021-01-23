@@ -139,6 +139,9 @@ public class Display extends JPanel implements KeyListener {
         try {
             if (isServer && server != null)
                 server.send(createGameInfo());
+            else if (!isServer && client != null) {
+                client.send(createGameInfo());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -272,38 +275,37 @@ public class Display extends JPanel implements KeyListener {
     public GameInfo createGameInfo() {
         GameInfo gi = new GameInfo();
         for (Moveable mo : moveables) {
-            gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
+            if (!mo.isRemoteControlled())
+                gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
         }
         return gi;
     }
 
     private void handleInput(Object obj) {
-        if (isServer) {
-            // System.out.println(obj);
-        } else {
-            if (obj instanceof GameInfo) {
-                GameInfo gi = (GameInfo) obj;
 
-                for (GameInfo.ObjectContainer oc : gi.moveables) {
-                    Moveable moveable = null;
-                    for (Moveable mo : moveables) {
-                        if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
-                            moveable = mo;
-                            break;
-                        }
+        if (obj instanceof GameInfo) {
+            GameInfo gi = (GameInfo) obj;
+
+            for (GameInfo.ObjectContainer oc : gi.moveables) {
+                Moveable moveable = null;
+                for (Moveable mo : moveables) {
+                    if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
+                        moveable = mo;
+                        break;
                     }
-                    if (moveable == null) {
-                        moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
-                        moveable.setVisible(oc.isVisible);
-                        moveable.setRemoteControlled(true);
-                        addMoveable(moveable);
-                    } else {
-                        moveable.setX(oc.x);
-                        moveable.setY(oc.y);
-                        moveable.setVX(oc.vx);
-                        moveable.setSpeed(oc.speed);
-                        moveable.setVisible(oc.isVisible);
-                    }
+                }
+                if (moveable == null) {
+                    moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
+                    moveable.setVisible(oc.isVisible);
+                    moveable.setRemoteControlled(true);
+                    moveable.setTraceColor(Color.RED);
+                    addMoveable(moveable);
+                } else {
+                    moveable.setX(oc.x);
+                    moveable.setY(oc.y);
+                    moveable.setVX(oc.vx);
+                    moveable.setSpeed(oc.speed);
+                    moveable.setVisible(oc.isVisible);
                 }
             }
         }

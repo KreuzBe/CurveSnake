@@ -92,6 +92,7 @@ public class Moveable {
             x += vx * speed;
             y += vy * speed;
         }
+
         if (life > 0)
             life--;
         else if (life == 0)
@@ -141,6 +142,7 @@ public class Moveable {
     }
 
     public void onCrash(int code) {
+        System.out.println("CRASH!!!");
     }
 
     public void turn(float angle) {

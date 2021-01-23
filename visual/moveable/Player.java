@@ -11,13 +11,14 @@ public class Player extends Moveable {
     private int gap = 0;
     private int score = 0;
 
-    public Player(int x, int y, int vx, int vy, int speed, Display display) {
+    public Player(int x, int y, int vx, int vy, int speed, Display display, int drawByte) {
         super(x, y, vx, vy, speed, display, Display.BYTE_PLAYER_MIN);
         setDrawByte(Display.BYTE_PLAYER_MIN << 1);
         addEnemyByte(Display.BYTE_PLAYER);
         addEnemyByte(Display.BYTE_NPC);
         addEnemyByte(Display.BYTE_WALL);
         setTraceColor(Color.CYAN);
+        setDrawByte(drawByte);
     }
 
     @Override
