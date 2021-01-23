@@ -18,7 +18,7 @@ import util.net.Server;
 import visual.Moveable;
 import visual.moveable.Enemy;
 
-public class Display extends JPanel implements KeyListener, Serializable {
+public class Display extends JPanel implements KeyListener {
 
     public static final int BYTE_WALL = 0b1;
     public static final int BYTE_POWERUP = 0b111110;
@@ -66,7 +66,7 @@ public class Display extends JPanel implements KeyListener, Serializable {
 
     public Display() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP\nYour input:");
+        System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP.\nYour input:");
         String input = sc.nextLine();
         if (input.isBlank()) {
             try {
@@ -125,7 +125,7 @@ public class Display extends JPanel implements KeyListener, Serializable {
             try {
                 GameInfo gi = new GameInfo();
                 //System.out.println(gi);
-                server.send(this);
+                server.send(gi);
             } catch (IOException e) {
                 e.printStackTrace();
             }
