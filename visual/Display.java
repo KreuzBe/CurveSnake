@@ -5,185 +5,286 @@ import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.ArrayList;
+
 import util.Loop;
 import visual.Moveable;
+import visual.moveable.Enemy;
 
 public class Display extends JPanel implements KeyListener {
 
-	private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
-	private static final int WIDTH = 1600;
-	private static final int HEIGHT = 900;
-	
-	private Loop loop;
-	private JFrame frame;
-	private ArrayList<Moveable> moveables;
-	private ArrayList<Moveable> removedMoveables;
-	
-	private boolean[] keys = new boolean[256];
-	private boolean[] keysOld = new boolean[256];
-	
-	private int[][] map; // maps the lines
-	
-	private BufferedImage visualMap;
-	private BufferedImage foreground;
-	public Graphics g;
-	public Graphics fg;
-	
-	public Display() {
-		moveables = new ArrayList();
-		removedMoveables = new ArrayList();
-		loop = new Loop(50, this::update);
-		
-		frame = new JFrame();
-		frame.setBounds(0, 0, 1600, 900);
-		frame.setLocationRelativeTo(null);
-		//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		frame.addKeyListener(this);
-		frame.add(this);
-	
-		frame.setVisible(true);
-		repaint(); // causes JPanel to resize
-		map = new int[WIDTH][HEIGHT];
-		
-		for(int x= 0; x  < WIDTH; x++){
-			for(int i = 50; i <= 5; i++){
-				map[x][i] = 0b1; // TODO WALL
-			}
-		}
-		for(int y = 0; y < HEIGHT; y ++) {
-			for(int i = 50; i <= 5; i++){
-				map[i][y] = 0b1; // TODO WALL
-			}
-		}
-		
-		visualMap = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_RGB);
-		foreground = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_ARGB);
-		g = visualMap.createGraphics();
-		fg = foreground.createGraphics();
-		
-	}
-	
-	private void update(int tick){
-		
-		paintMap();
-		
-		foreground = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_ARGB);
-		fg = foreground.createGraphics();
-		
-		frame.setTitle(tick + " " + moveables.size());
-		onUpdate(tick);
-		
+    public static final int BYTE_WALL = 0b1;
+    public static final int BYTE_POWERUP = 0b111110;
+    public static final int BYTE_POWERUP_MIN = 0b1 << 1;
+    public static final int BYTE_POWERUP_MAX = 0b1 << 5;
+    public static final int BYTE_NPC = 0b11111000000;
+    public static final int BYTE_SHIFT_NPC = 6;
+    public static final int BYTE_NPC_MIN = 0b1 << BYTE_SHIFT_NPC;
+    public static final int BYTE_NPC_MAX = 0b1 << 10;
+    public static final int BYTE_PLAYER = 0b1111100000000000;
+    public static final int BYTE_SHIFT_PLAYER = 11;
+    public static final int BYTE_PLAYER_MIN = 0b1 << BYTE_SHIFT_PLAYER;
+    public static final int BYTE_PLAYER_MAX = 0b1 << 15;
 
-		for(int i = 0; i < keys.length; i++)
-			keysOld[i] = keys[i];
+    private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
+    public static final int WIDTH = 1600;
+    public static final int HEIGHT = 900;
 
-		for(Moveable mo : moveables) {
-			mo.update(tick);
-			if(mo.shouldDecay())
-				removedMoveables.add(mo);
-		}
-		
-		for(Moveable mo : removedMoveables) {
-			moveables.remove(mo);
-		}
-		removedMoveables.clear();
-		
-		repaint();
-	}
-	
-	private void paintMap() {
-		for(Moveable mo : moveables) {
-			if(!mo.isVisible())
-				continue;
-			
-			switch(mo.getType()){
-				case Moveable.TYPE_PLAYER:
-					g.setColor(Color.CYAN);
-					break;
-				case Moveable.TYPE_NPC:
-					g.setColor(Color.RED);
-					break;
-				default:
-					g.setColor(Color.GRAY);
-				
-			}
-			
-			for(int i = 0; i < mo.getSpeed(); i++){
-				g.fillOval((int) (mo.getX() - i * mo.getVX()) - 5, (int) (mo.getY() - i * mo.getVY())- 5, 10, 10);
-			}
-		}
-	}
-	
-	public void addMoveable(Moveable mo) {
-		moveables.add(mo);
-	}
-	
-	public void onUpdate(int tick){};
-	
-	public void start() {
-		loop.start();
-	}
-	
-	public void stop() {
-		loop.stop();
-	}
-	
-	public boolean isRunning() {
-		return loop.isRunning();
-	}
-	
-	public int[][] getMap() {
-		return map;
-	}
-	
-	public void keyPressed(KeyEvent e) {
-		if(loop.isRunning() && e.getKeyCode() < keys.length)
-			keys[e.getKeyCode()] = true;
-	}
-	public void keyReleased(KeyEvent e) {
-		if(loop.isRunning() && e.getKeyCode() < keys.length)
-			keys[e.getKeyCode()] = false;
-	}
-	
-	public void keyTyped(KeyEvent e) {
-		
-	}
-	
-	public boolean isKey(int keyCode){
-		return keys[keyCode];
-	}
-	public boolean isKeyPressed(int keyCode) {
-		return keys[keyCode] && !keysOld[keyCode];
-	}
-	
-	public boolean isKeyReleased(int keyCode) {
-		return !keys[keyCode] && keysOld[keyCode];
-	}
-	
-	//public Graphics getGraphics(){
-	//	return g;
-	//}
-	
-	public void paint(Graphics graphics) {
-		graphics.drawImage(visualMap, 0, 0, null);
-		graphics.drawImage(foreground, 0, 0, null);
-		//System.out.println("PAINT");
-		for(Moveable mo : moveables) {
-			switch(mo.getType()){
-				case Moveable.TYPE_PLAYER:
-					graphics.setColor(Color.CYAN);
-					break;
-				case Moveable.TYPE_NPC:
-					graphics.setColor(Color.RED);
-					break;
-				default:
-					graphics.setColor(Color.GRAY);
-			}
-			graphics.fillOval((int) mo.getX() - 10, (int) mo.getY() - 10, 20, 20);
-		}
-	}
-	
+    protected static final Color bgColor = new Color(0x220033);
+
+    private Loop loop;
+    private JFrame frame;
+    private ArrayList<Moveable> moveables;
+    private ArrayList<Moveable> addedMoveables;
+    private ArrayList<Moveable> removedMoveables;
+    private ArrayList<PowerUp> powerUps;
+
+    private boolean[] keys = new boolean[256];
+    private boolean[] keysOld = new boolean[256];
+
+    private final int scale = 10;
+    private final int border = 10;
+    private int[][] map; // maps the lines
+    private int[][] scaledMap;
+
+    private BufferedImage visualMap;
+    private BufferedImage foreground;
+    public Graphics g;
+    public Graphics fg;
+
+    public Display() {
+        moveables = new ArrayList<Moveable>();
+        addedMoveables = new ArrayList<Moveable>();
+        removedMoveables = new ArrayList<Moveable>();
+        powerUps = new ArrayList<PowerUp>();
+        loop = new Loop(40, this::update);
+
+        frame = new JFrame();
+        //  frame.setUndecorated(true);
+        frame.setBounds(0, 0, 2 * WIDTH, 2 * HEIGHT);
+        frame.setLocationRelativeTo(null);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setResizable(false);
+        frame.addKeyListener(this);
+        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        frame.add(this);
+
+        frame.pack();
+        frame.setVisible(true);
+
+        repaint(); // causes JPanel to resize
+        map = new int[WIDTH][HEIGHT];
+        scaledMap = new int[WIDTH / scale][HEIGHT / scale];
+
+        clear();
+
+        visualMap = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        g = visualMap.createGraphics();
+    }
+
+    public ArrayList<PowerUp> getPowerUps() {
+        return powerUps;
+    }
+
+    private void update(int tick) {
+
+        moveables.addAll(addedMoveables);
+        addedMoveables.clear();
+
+        g.setColor(bgColor);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+
+        foreground = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        fg = foreground.createGraphics();
+
+        frame.setTitle(loop.getLastUps() + " " + moveables.size());
+        onUpdate(tick);
+
+        System.arraycopy(keys, 0, keysOld, 0, keys.length);
+
+        for (Moveable mo : moveables) {
+            try {
+                mo.update(tick);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (mo.shouldDecay())
+                removedMoveables.add(mo);
+        }
+
+        moveables.removeAll(removedMoveables);
+        removedMoveables.clear();
+
+        // Foreground painting (lasts one tick)
+
+        int exR = (int) (10 * Math.sin(Math.toRadians(6 * tick))) - 5;
+        for (PowerUp p : powerUps) {
+            fg.drawImage(ImageLoader.images[p.getImageNumber()][(tick / 10) % 5], (int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius(), null);
+        }
+
+        repaint();
+    }
+
+    public void addMoveable(Moveable mo) {
+        addedMoveables.add(mo);
+    }
+
+    public void onUpdate(int tick) {
+    }
+
+    public void clear() {
+        visualMap = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        g = visualMap.createGraphics();
+
+        for (Moveable mo : moveables) {
+            mo.clear();
+        }
+
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                unsetMapByte(x, y, ~(BYTE_WALL | BYTE_POWERUP));
+            }
+        }
+
+        scaledMap = new int[WIDTH / scale][HEIGHT / scale];
+
+        for (int x = 0; x < WIDTH; x++) {
+            for (int i = 0; i <= border; i++) {
+                //map[x][i] = BYTE_WALL; // TODO WALL
+                setMapByte(x, i, BYTE_WALL);
+                setMapByte(x, HEIGHT - 1 - i, BYTE_WALL);
+            }
+        }
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int i = 0; i <= border; i++) {
+                // map[i][y] = BYTE_WALL; // TODO WALL
+                setMapByte(i, y, BYTE_WALL);
+                setMapByte(WIDTH - 1 - i, y, BYTE_WALL);
+            }
+        }
+    }
+
+    public void start() {
+        loop.start();
+    }
+
+    public void stop() {
+        for (Moveable mo : moveables) {
+            if (mo instanceof Enemy) {
+                ((Enemy) mo).stop();
+            }
+        }
+        loop.stop();
+    }
+
+    public void createPowerUp(PowerUp powerUp) {
+        for (PowerUp p : powerUps)
+            if (p.getDrawByte() == powerUp.getDrawByte())
+                return;
+
+        powerUps.add(powerUp);
+        for (int rx = -powerUp.getRadius(); rx < powerUp.getRadius(); rx++) {
+            for (int ry = -powerUp.getRadius(); ry < powerUp.getRadius(); ry++) {
+                if (rx * rx + ry + ry < powerUp.getRadius() * powerUp.getRadius()) {
+                    //  map[powerUp.getX() + rx][powerUp.getY() + ry] |= powerUp.getDrawByte();
+                    setMapByte((int) powerUp.getX() + rx, (int) powerUp.getY() + ry, powerUp.getDrawByte());
+                }
+            }
+        }
+    }
+
+    public void removePowerUp(int power) {
+        PowerUp powerUp = null;
+        for (PowerUp p : powerUps) {
+            if ((power & p.getDrawByte()) != 0) {
+                powerUp = p;
+                break;
+            }
+        }
+
+        if (powerUp == null)
+            return;
+        System.out.println("Remove PowerUp " + Integer.toBinaryString(power));
+        for (int rx = -powerUp.getRadius() - 3; rx < powerUp.getRadius() + 3; rx++) {
+            for (int ry = -powerUp.getRadius() - 3; ry < powerUp.getRadius() + 3; ry++) {
+                if (rx * rx + ry + ry <= powerUp.getRadius() * powerUp.getRadius() + 4) {
+                    unsetMapByte((int) powerUp.getX() + rx, (int) powerUp.getY() + ry, powerUp.getDrawByte());
+                }
+            }
+        }
+        powerUps.remove(powerUp);
+    }
+
+    public boolean isRunning() {
+        return loop.isRunning();
+    }
+
+    public int[][] getMap() {
+        return map;
+    }
+
+    public int[][] getScaledMap() {
+        return scaledMap;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public void setMapByte(int x, int y, int value) {
+        map[x][y] |= value;
+        scaledMap[(x) / scale][(y) / scale] |= value;
+    }
+
+    public void unsetMapByte(int x, int y, int value) {
+        map[x][y] &= ~value;
+        scaledMap[x / scale][y / scale] &= ~value;
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if (loop.isRunning() && e.getKeyCode() < keys.length)
+            keys[e.getKeyCode()] = true;
+    }
+
+    public void keyReleased(KeyEvent e) {
+        if (loop.isRunning() && e.getKeyCode() < keys.length)
+            keys[e.getKeyCode()] = false;
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public boolean isKey(int keyCode) {
+        return keys[keyCode];
+    }
+
+    public boolean isKeyPressed(int keyCode) {
+        return keys[keyCode] && !keysOld[keyCode];
+    }
+
+    public boolean isKeyReleased(int keyCode) {
+        return !keys[keyCode] && keysOld[keyCode];
+    }
+
+    public ArrayList<Moveable> getMoveables() {
+        return moveables;
+    }
+    //public Graphics getGraphics(){
+    //	return g;
+    //}
+
+    public void paint(Graphics graphics) {
+
+        graphics.drawImage(visualMap, 0, 0, null);
+
+        for (int i = 0; i < moveables.size(); i++) {
+            graphics.drawImage(moveables.get(i).getImage(), 0, 0, null);
+        }
+
+        graphics.drawImage(foreground, 0, 0, null);
+        //System.out.println("PAINT");
+
+    }
 }
 
