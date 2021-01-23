@@ -141,7 +141,7 @@ public class Moveable {
             traceGraphics.fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
         }
         if (isRemoteControlled()) {
-            traceGraphics.setStroke(new BasicStroke(radius / 2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, radius / 2f));
+            traceGraphics.setStroke(new BasicStroke(radius, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, radius));
             traceGraphics.drawLine((int) x, (int) y, (int) lastX, (int) lastY);
             lastX = x;
             lastY = y;
