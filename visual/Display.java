@@ -65,7 +65,7 @@ public class Display extends JPanel implements KeyListener {
     public Display() {
         Scanner sc = new Scanner(System.in);
         System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP\nYour input:");
-        String input = sc.next();
+        String input = sc.nextLine();
         if (input.isBlank()) {
             try {
                 System.out.println("Creating server...");
@@ -74,6 +74,7 @@ public class Display extends JPanel implements KeyListener {
                 server = new Server(DEFAULT_PORT);
             } catch (Exception e) {
                 e.printStackTrace();
+                System.exit(-1);
             }
         } else {
             System.out.println("Setting up client...");
@@ -82,6 +83,8 @@ public class Display extends JPanel implements KeyListener {
                 client = new Client(input, DEFAULT_PORT);
             } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println("Exiting program...");
+                System.exit(-1);
             }
         }
 
