@@ -73,6 +73,7 @@ public class Display extends JPanel implements KeyListener {
                 System.out.println("Your IP is: " + InetAddress.getLocalHost().getHostAddress());
                 isServer = true;
                 server = new Server(DEFAULT_PORT);
+                server.setInputConsumer(this::handleInput);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
@@ -82,6 +83,7 @@ public class Display extends JPanel implements KeyListener {
             isServer = false;
             try {
                 client = new Client(input, DEFAULT_PORT);
+                client.setInputConsumer(this::handleInput);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Exiting program...");
@@ -265,6 +267,21 @@ public class Display extends JPanel implements KeyListener {
             gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte());
         }
         return gi;
+    }
+
+    private void handleInput(Object obj) {
+        if (isServer) {
+            System.out.println(obj);
+        } else {
+            if (obj instanceof GameInfo) {
+                GameInfo gi = (GameInfo) obj;
+                try {
+                    client.send(gi);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public boolean isRunning() {

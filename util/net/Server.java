@@ -56,7 +56,7 @@ public class Server {
             try {
                 if (inputConsumer != null)
                     inputConsumer.accept(in.readObject());
-                System.out.println(in.readObject().toString());
+                // System.out.println(in.readObject().toString());
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Connection lost");
