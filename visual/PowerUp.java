@@ -11,7 +11,7 @@ public class PowerUp extends Moveable {
     private int imageNumber;
 
     public PowerUp(float x, float y, int radius, int drawByte, Display display) {
-        super(x, y, 0f, 0f, 0f, display, TYPE_BULLET);
+        super(x, y, 0f, 0f, 0f, display, drawByte);
         this.radius = radius;
         this.drawByte = drawByte;
         this.imageNumber = ((int) (Math.log(drawByte) / Math.log(2)) - 1); //

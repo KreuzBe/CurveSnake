@@ -18,7 +18,7 @@ public class Enemy extends Moveable {
     private boolean[][] lastAvoidedDeaths;
 
     public Enemy(int x, int y, int vx, int vy, int speed, Display display, Moveable target) {
-        super(x, y, vx, vy, speed, display, TYPE_NPC);
+        super(x, y, vx, vy, speed, display, Display.BYTE_NPC_MIN);
         this.target = this.mainTarget = target;
         setDrawByte(Display.BYTE_NPC_MIN);
         addEnemyByte(Display.BYTE_PLAYER);
