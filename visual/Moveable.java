@@ -134,8 +134,10 @@ public class Moveable {
             }
         }
 
-        if (!isVisible)
+        if (!isVisible) {
+
             return;
+        }
         traceGraphics.setColor(traceColor);
         for (int i = 0; i < getSpeed(); i++) {
             traceGraphics.fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
