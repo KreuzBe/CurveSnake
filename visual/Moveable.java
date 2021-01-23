@@ -89,10 +89,10 @@ public class Moveable {
     }
 
     public void update(int tick) throws Exception {
-        // if (!isRemoteControlled()) {
-        x += vx * speed;
-        y += vy * speed;
-        //}
+        if (!isRemoteControlled()) {
+            x += vx * speed;
+            y += vy * speed;
+        }
 
         if (life > 0)
             life--;
