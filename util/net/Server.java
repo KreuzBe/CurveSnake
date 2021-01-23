@@ -59,7 +59,7 @@ public class Server {
                     // System.out.println(in.readObject().toString());
                 }
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                System.err.println(e.getCause() + " " + e.getMessage());
                 System.out.println("Connection lost");
                 isRunning = false;
                 break;
