@@ -272,7 +272,7 @@ public class Display extends JPanel implements KeyListener {
     public GameInfo createGameInfo() {
         GameInfo gi = new GameInfo();
         for (Moveable mo : moveables) {
-            gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte());
+            gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
         }
         return gi;
     }
@@ -294,6 +294,7 @@ public class Display extends JPanel implements KeyListener {
                     }
                     if (moveable == null) {
                         moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
+                        moveable.setVisible(oc.isVisible);
                         moveable.setRemoteControlled(true);
                         addMoveable(moveable);
                     } else {
@@ -301,6 +302,7 @@ public class Display extends JPanel implements KeyListener {
                         moveable.setY(oc.y);
                         moveable.setVX(oc.vx);
                         moveable.setSpeed(oc.speed);
+                        moveable.setVisible(oc.isVisible);
                     }
                 }
             }
