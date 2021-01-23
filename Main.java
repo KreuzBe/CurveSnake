@@ -1,13 +1,7 @@
-import util.net.Client;
-import util.net.Server;
 import visual.Display;
 import visual.ImageLoader;
-import visual.PowerUp;
 import visual.moveable.Enemy;
 import visual.moveable.Player;
-
-import java.awt.*;
-import java.io.IOException;
 
 public class Main extends Display {
 
