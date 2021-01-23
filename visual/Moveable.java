@@ -140,6 +140,12 @@ public class Moveable {
         for (int i = 0; i < getSpeed(); i++) {
             traceGraphics.fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
         }
+        if (isRemoteControlled()) {
+            traceGraphics.setStroke(new BasicStroke(radius / 2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, radius / 2f));
+            traceGraphics.drawLine((int) x, (int) y, (int) lastX, (int) lastY);
+            lastX = x;
+            lastY = y;
+        }
     }
 
     public void onCrash(int code) {
