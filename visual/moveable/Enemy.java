@@ -204,7 +204,8 @@ public class Enemy extends Moveable {
 
     @Override
     public void update(int tick) {
-        target.simplifyVector();
+        if (target != null)
+            target.simplifyVector();
 
         if (getDisplay().getPowerUps().size() > 0) {
             setTarget(getDisplay().getPowerUps().get(0));
