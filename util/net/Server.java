@@ -56,7 +56,6 @@ public class Server {
             try {
                 if (inputConsumer != null) {
                     inputConsumer.accept(in.readObject());
-                    in.reset();
                     // System.out.println(in.readObject().toString());
                 }
             } catch (IOException | ClassNotFoundException e) {
