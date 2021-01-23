@@ -67,7 +67,10 @@ public class PowerUp extends Moveable {
             }
             for (Moveable mo : moveable.getDisplay().getMoveables()) {
                 mo.getGraphics().setColor(Display.bgColor);
+                mo.getGraphics().setPaint(new Color(0f, 0f, 1f, 0.0f));
+                mo.getGraphics().setXORMode(mo.getTraceColor());
                 mo.getGraphics().fillOval((int) moveable.getX() - radius, (int) moveable.getY() - radius, 2 * radius, 2 * radius);
+                mo.getGraphics().setPaintMode();
             }
 
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);

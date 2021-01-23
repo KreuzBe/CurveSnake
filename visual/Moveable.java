@@ -10,7 +10,7 @@ public class Moveable {
     public static final int TYPE_BULLET = 3;
 
     private BufferedImage trace;
-    private Graphics traceGraphics;
+    private Graphics2D traceGraphics;
     private Color traceColor = Color.GREEN;
     private float x, y;
     private float vx, vy;
@@ -249,12 +249,16 @@ public class Moveable {
         return trace;
     }
 
-    public Graphics getGraphics() {
+    public Graphics2D getGraphics() {
         return traceGraphics;
     }
 
     public void setTraceColor(Color color) {
         traceColor = color;
+    }
+
+    public Color getTraceColor() {
+        return traceColor;
     }
 
     public void simplifyVector() {
