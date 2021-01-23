@@ -16,8 +16,17 @@ public class Moveable {
     private boolean decay = false;
     private int life = -1;
     private boolean isVisible = true;
+    private boolean remoteControlled = false;
 
     private Display display;
+
+    public boolean isRemoteControlled() {
+        return remoteControlled;
+    }
+
+    public void setRemoteControlled(boolean remoteControlled) {
+        this.remoteControlled = remoteControlled;
+    }
 
     private int drawByte = 0b0;
     private int enemyBytes = Display.BYTE_WALL;
@@ -79,8 +88,10 @@ public class Moveable {
     }
 
     public void update(int tick) throws Exception {
-        x += vx * speed;
-        y += vy * speed;
+        if (!isRemoteControlled()) {
+            x += vx * speed;
+            y += vy * speed;
+        }
         if (life > 0)
             life--;
         else if (life == 0)
