@@ -137,7 +137,7 @@ public class Display extends JPanel implements KeyListener {
 
     private void update(int tick) {
         try {
-            if (isServer)
+            if (isServer && server != null)
                 server.send(createGameInfo());
         } catch (IOException e) {
             e.printStackTrace();
