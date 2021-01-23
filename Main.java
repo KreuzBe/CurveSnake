@@ -16,15 +16,13 @@ public class Main extends Display {
 
     public Main() {
         ImageLoader.init();
+        addMoveable(new Player(50, 50, 1, 1, 3, this));
         start();
     }
 
     @Override
     public void onUpdate(int tick) {
-        fg.setColor(Color.RED);
-        for (int i = 0; i < player.getScore(); i++) {
-            fg.drawImage(ImageLoader.images[ImageLoader.IMG_COIN][0], 100 + 50 * i, 25, 25, 25, null);
-        }
+
     }
 
     public static void main(String[] args) {

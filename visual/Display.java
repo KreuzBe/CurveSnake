@@ -136,7 +136,11 @@ public class Display extends JPanel implements KeyListener {
     }
 
     private void update(int tick) {
-
+        try {
+            server.send(createGameInfo());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         moveables.addAll(addedMoveables);
         addedMoveables.clear();
 
@@ -274,14 +278,15 @@ public class Display extends JPanel implements KeyListener {
 
     private void handleInput(Object obj) {
         if (isServer) {
-            System.out.println(obj);
+            // System.out.println(obj);
         } else {
             if (obj instanceof GameInfo) {
                 GameInfo gi = (GameInfo) obj;
-                try {
-                    client.send(gi);
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                for (GameInfo.ObjectContainer oc : gi.moveables) {
+                    Moveable mo = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
+                    mo.setlife(1);
+                    addMoveable(mo);
                 }
             }
         }

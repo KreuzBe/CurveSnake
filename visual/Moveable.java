@@ -6,9 +6,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Moveable {
-    public static final int TYPE_PLAYER = 1;
-    public static final int TYPE_NPC = 2;
-    public static final int TYPE_BULLET = 3;
 
     private BufferedImage trace;
     private Graphics2D traceGraphics;
@@ -18,7 +15,6 @@ public class Moveable {
     private float speed;
     private boolean decay = false;
     private int life = -1;
-    private int type;
     private boolean isVisible = true;
 
     private Display display;
@@ -26,13 +22,13 @@ public class Moveable {
     private int drawByte = 0b0;
     private int enemyBytes = Display.BYTE_WALL;
 
-    public Moveable(float x, float y, float vx, float vy, float speed, Display display, int type) {
+    public Moveable(float x, float y, float vx, float vy, float speed, Display display, int drawByte) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.speed = speed;
-        this.type = type;
+        this.drawByte = drawByte;
 
         this.display = display;
         clear();
@@ -164,10 +160,6 @@ public class Moveable {
 
     public void decay() {
         decay = true;
-    }
-
-    public int getType() {
-        return type;
     }
 
     public void setlife(int life) {

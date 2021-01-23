@@ -12,9 +12,9 @@ public class GameInfo implements Serializable {
         moveables.add(new ObjectContainer(x, y, vx, vy, speed, drawByte));
     }
 
-    private static class ObjectContainer {
-        float x, y, vx, vy, speed;
-        int drawByte;
+    public static class ObjectContainer {
+        public float x, y, vx, vy, speed;
+        public int drawByte;
 
         public ObjectContainer(float x, float y, float vx, float vy, float speed, int drawByte) {
             this.x = x;
