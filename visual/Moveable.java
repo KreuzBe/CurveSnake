@@ -89,10 +89,10 @@ public class Moveable {
     }
 
     public void update(int tick) throws Exception {
-        if (!isRemoteControlled()) {
-            x += vx * speed;
-            y += vy * speed;
-        }
+        // if (!isRemoteControlled()) {
+        x += vx * speed;
+        y += vy * speed;
+        //}
 
         if (life > 0)
             life--;
@@ -140,13 +140,6 @@ public class Moveable {
             return;
         }
         traceGraphics.setColor(traceColor);
-        if (isRemoteControlled()) {
-            traceGraphics.setStroke(new BasicStroke(radius, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, radius));
-            traceGraphics.drawLine((int) x, (int) y, (int) lastX, (int) lastY);
-            lastX = x;
-            lastY = y;
-            return;
-        }
         for (int i = 0; i < getSpeed(); i++) {
             traceGraphics.fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
         }
