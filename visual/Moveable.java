@@ -89,6 +89,10 @@ public class Moveable {
         else if (life == 0)
             decay = true;
 
+        if (x < 0 || y < 0 || x > Display.WIDTH || y > Display.HEIGHT) {
+            onCrash(0);
+        }
+
         int[][] map = display.getMap();
 
         if ((map[(int) x][(int) y] & Display.BYTE_POWERUP) != 0) {
@@ -101,7 +105,7 @@ public class Moveable {
         if (!isVisible())
             return;
         try {
-            if (x < 0 || y < 0 || x > Display.WIDTH || y > Display.HEIGHT || (map[(int) x][(int) y] & enemyBytes) != 0) {
+            if ((map[(int) x][(int) y] & enemyBytes) != 0) {
                 onCrash(map[(int) x][(int) y]);
             }
         } catch (Exception e) {

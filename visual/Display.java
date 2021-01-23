@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import util.net.Server;
 import visual.Moveable;
 import visual.moveable.Enemy;
 
-public class Display extends JPanel implements KeyListener {
+public class Display extends JPanel implements KeyListener, Serializable {
 
     public static final int BYTE_WALL = 0b1;
     public static final int BYTE_POWERUP = 0b111110;
