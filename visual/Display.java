@@ -279,7 +279,8 @@ public class Display extends JPanel implements KeyListener {
         GameInfo gi = new GameInfo();
         for (Moveable mo : moveables) {
             if (!mo.isRemoteControlled())
-                gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
+                mo.simplifyVector();
+            gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
         }
         gi.stop = isGameOver;
         return gi;
