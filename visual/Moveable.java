@@ -2,9 +2,10 @@ package visual;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Moveable {
+public class Moveable implements Serializable {
     public static final int TYPE_PLAYER = 1;
     public static final int TYPE_NPC = 2;
     public static final int TYPE_BULLET = 3;
