@@ -45,8 +45,10 @@ public class Server {
     }
 
     public void send(Object o) throws IOException {
-        out.writeObject(o);
-        out.flush();
+        if (!serverSocket.isClosed() && !clientSocket.isClosed()) {
+            out.writeObject(o);
+            out.flush();
+        }
     }
 
     private void listen() { // TODO LISTEN AS LONG AS YOU CAN
