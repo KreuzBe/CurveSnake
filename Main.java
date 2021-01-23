@@ -16,7 +16,8 @@ public class Main extends Display {
 
     public Main() {
         ImageLoader.init();
-        addMoveable(new Player(50, 50, 1, 1, 3, this));
+        if (isServer())
+            addMoveable(new Player(50, 50, 1, 1, 3, this));
         start();
     }
 

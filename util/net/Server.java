@@ -67,6 +67,8 @@ public class Server {
         }
         try {
             in.close();
+            clientSocket.close();
+            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

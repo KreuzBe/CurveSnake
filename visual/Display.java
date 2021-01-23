@@ -285,9 +285,22 @@ public class Display extends JPanel implements KeyListener {
                 GameInfo gi = (GameInfo) obj;
 
                 for (GameInfo.ObjectContainer oc : gi.moveables) {
-                    Moveable mo = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
-                    mo.setlife(1);
-                    addMoveable(mo);
+                    Moveable moveable = null;
+                    for (Moveable mo : moveables) {
+                        if (mo.getDrawByte() == oc.drawByte) {
+                            moveable = mo;
+                            break;
+                        }
+                    }
+                    if (moveable == null) {
+                        moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
+                        addMoveable(moveable);
+                    } else {
+                        moveable.setX(oc.x);
+                        moveable.setY(oc.y);
+                        moveable.setVX(oc.vx);
+                        moveable.setSpeed(oc.speed);
+                    }
                 }
             }
         }
@@ -348,6 +361,11 @@ public class Display extends JPanel implements KeyListener {
     public ArrayList<Moveable> getMoveables() {
         return moveables;
     }
+
+    public boolean isServer() {
+        return isServer;
+    }
+
     //public Graphics getGraphics(){
     //	return g;
     //}
@@ -362,7 +380,6 @@ public class Display extends JPanel implements KeyListener {
 
         graphics.drawImage(foreground, 0, 0, null);
         //System.out.println("PAINT");
-
     }
 }
 
