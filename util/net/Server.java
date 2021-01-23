@@ -1,6 +1,9 @@
 package util.net;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,12 +15,12 @@ public class Server {
     private int port;
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private PrintWriter out;
+    private BufferedReader in;
 
-    private Consumer<Object> inputConsumer;
+    private Consumer<String> inputConsumer;
 
-    public void setInputConsumer(Consumer<Object> inputConsumer) {
+    public void setInputConsumer(Consumer<String> inputConsumer) {
         this.inputConsumer = inputConsumer;
     }
 
@@ -29,8 +32,8 @@ public class Server {
             clientSocket = serverSocket.accept();
             System.out.println("Connected!");
 
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
-            in = new ObjectInputStream(clientSocket.getInputStream());
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             listeningThread = new Thread(this::listen, "Listening Thread");
             listeningThread.setDaemon(true);
@@ -40,7 +43,7 @@ public class Server {
         }
     }
 
-    public ObjectOutputStream getPrintWriter() {
+    public PrintWriter getPrintWriter() {
         return out;
     }
 
@@ -52,9 +55,9 @@ public class Server {
 
             try {
                 if (inputConsumer != null)
-                    inputConsumer.accept(in.readObject());
-                System.out.println(in.readObject().toString());
-            } catch (IOException | ClassNotFoundException e) {
+                    inputConsumer.accept(in.readLine());
+                System.out.println(in.readLine());
+            } catch (IOException e) {
                 e.printStackTrace();
                 break;
             }

@@ -1,3 +1,5 @@
+import util.net.Client;
+import util.net.Server;
 import visual.Display;
 import visual.ImageLoader;
 import visual.PowerUp;
@@ -40,7 +42,7 @@ public class Main extends Display {
     }
 
     public static void main(String[] args) {
-
+        Client cl = new Client("192.168.2.121", 4444);
 
         new Main();
     }
