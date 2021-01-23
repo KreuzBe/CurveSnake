@@ -287,13 +287,14 @@ public class Display extends JPanel implements KeyListener {
                 for (GameInfo.ObjectContainer oc : gi.moveables) {
                     Moveable moveable = null;
                     for (Moveable mo : moveables) {
-                        if (mo.getDrawByte() == oc.drawByte) {
+                        if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
                             moveable = mo;
                             break;
                         }
                     }
                     if (moveable == null) {
                         moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
+                        moveable.setRemoteControlled(true);
                         addMoveable(moveable);
                     } else {
                         moveable.setX(oc.x);
