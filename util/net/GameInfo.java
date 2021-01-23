@@ -7,6 +7,7 @@ public class GameInfo implements Serializable {
 
     public ArrayList<ObjectContainer> moveables = new ArrayList<ObjectContainer>();
     public ArrayList<ObjectContainer> powerups = new ArrayList<ObjectContainer>();
+    public boolean stop = false;
 
     public void addMoveable(float x, float y, float vx, float vy, float speed, int drawByte, boolean isVisible) {
         moveables.add(new ObjectContainer(x, y, vx, vy, speed, drawByte, isVisible));

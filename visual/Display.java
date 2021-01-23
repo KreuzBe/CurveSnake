@@ -17,6 +17,7 @@ import util.net.GameInfo;
 import util.net.Server;
 import visual.Moveable;
 import visual.moveable.Enemy;
+import visual.moveable.Player;
 
 public class Display extends JPanel implements KeyListener {
 
@@ -63,6 +64,7 @@ public class Display extends JPanel implements KeyListener {
     private Server server;
     private Client client;
     private boolean isServer;
+    private boolean isGameOver = false;
 
     public Display() {
         Scanner sc = new Scanner(System.in);
@@ -110,7 +112,7 @@ public class Display extends JPanel implements KeyListener {
 
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.requestFocus();
+        frame.setAlwaysOnTop(true);
         frame.setVisible(true);
 
         repaint(); // causes JPanel to resize
@@ -279,6 +281,7 @@ public class Display extends JPanel implements KeyListener {
             if (!mo.isRemoteControlled())
                 gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
         }
+        gi.stop = isGameOver;
         return gi;
     }
 
@@ -286,6 +289,10 @@ public class Display extends JPanel implements KeyListener {
 
         if (obj instanceof GameInfo) {
             GameInfo gi = (GameInfo) obj;
+
+            if (gi.stop) {
+                gameOver(null, 0);
+            }
 
             for (GameInfo.ObjectContainer oc : gi.moveables) {
                 Moveable moveable = null;
@@ -386,6 +393,20 @@ public class Display extends JPanel implements KeyListener {
 
         graphics.drawImage(foreground, 0, 0, null);
         //System.out.println("PAINT");
+    }
+
+    public void gameOver(Player player, int code) {
+        isGameOver = true;
+        try {
+            if (isServer) {
+                server.send(createGameInfo());
+            } else {
+                client.send(createGameInfo());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stop();
     }
 }
 

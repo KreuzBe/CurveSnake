@@ -64,6 +64,7 @@ public class Player extends Moveable {
             System.out.println("something I dont know... what could that be? Are these... aliens?");
         }
         System.out.println("You have " + getScore() + " Points!!!");
+        getDisplay().gameOver(this, code);
         System.exit(0);
     }
 }
