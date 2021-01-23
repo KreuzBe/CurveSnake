@@ -17,6 +17,7 @@ public class Moveable {
     private int life = -1;
     private boolean isVisible = true;
     private boolean remoteControlled = false;
+    private float lastX, lastY;
 
     private Display display;
 
@@ -32,8 +33,8 @@ public class Moveable {
     private int enemyBytes = Display.BYTE_WALL;
 
     public Moveable(float x, float y, float vx, float vy, float speed, Display display, int drawByte) {
-        this.x = x;
-        this.y = y;
+        this.x = this.lastX = x;
+        this.y = this.lastY = y;
         this.vx = vx;
         this.vy = vy;
         this.speed = speed;

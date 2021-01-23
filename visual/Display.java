@@ -396,6 +396,7 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void gameOver(Player player, int code) {
+        System.out.println("THE GAME IS OVER");
         isGameOver = true;
         try {
             if (isServer) {
