@@ -4,10 +4,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import javax.swing.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import util.Loop;
+import util.net.Client;
 import util.net.GameInfo;
+import util.net.Server;
 import visual.Moveable;
 import visual.moveable.Enemy;
 
@@ -25,6 +30,7 @@ public class Display extends JPanel implements KeyListener {
     public static final int BYTE_SHIFT_PLAYER = 11;
     public static final int BYTE_PLAYER_MIN = 0b1 << BYTE_SHIFT_PLAYER;
     public static final int BYTE_PLAYER_MAX = 0b1 << 15;
+    private static final int DEFAULT_PORT = 4444;
 
     private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
     public static final int WIDTH = 1600;
@@ -52,7 +58,33 @@ public class Display extends JPanel implements KeyListener {
     public Graphics g;
     public Graphics fg;
 
+    private Server server;
+    private Client client;
+    private boolean isServer;
+
     public Display() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP\nYour input:");
+        String input = sc.next();
+        if (input.isBlank()) {
+            try {
+                System.out.println("Creating server...");
+                System.out.println("Your IP is: " + InetAddress.getLocalHost().getHostAddress());
+                isServer = true;
+                server = new Server(DEFAULT_PORT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Setting up client...");
+            isServer = false;
+            try {
+                client = new Client(input, DEFAULT_PORT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         moveables = new ArrayList<Moveable>();
         addedMoveables = new ArrayList<Moveable>();
         removedMoveables = new ArrayList<Moveable>();

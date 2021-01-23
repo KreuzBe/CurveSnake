@@ -43,15 +43,15 @@ public class Main extends Display {
     }
 
     public static void main(String[] args) {
-        Client cl = new Client("192.168.2.121", 4444);
+//        Client cl = new Client("192.168.2.121", 4444);
+//
+//        try {
+//            cl.write(new Main().createGameInfo());
+//            System.out.println("Hello World");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        try {
-            cl.write(new Main().createGameInfo());
-            System.out.println("Hello World");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //new Main();
+        new Main();
     }
 }

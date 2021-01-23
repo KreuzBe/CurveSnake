@@ -17,21 +17,18 @@ public class Client {
 
     private Consumer<Object> inputConsumer;
 
-    public Client(String host, int port) {
+    public Client(String host, int port) throws IOException {
         this.host = host;
         this.port = port;
-        try {
-            socket = new Socket(host, port);
 
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
+        socket = new Socket(host, port);
 
-            listeningThread = new Thread(this::listen, "Listening Thread");
-            listeningThread.setDaemon(true);
-            listeningThread.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        out = new ObjectOutputStream(socket.getOutputStream());
+        in = new ObjectInputStream(socket.getInputStream());
+
+        listeningThread = new Thread(this::listen, "Listening Thread");
+        listeningThread.setDaemon(true);
+        listeningThread.start();
     }
 
     public void setInputConsumer(Consumer<Object> inputConsumer) {
