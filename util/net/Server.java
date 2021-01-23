@@ -44,6 +44,11 @@ public class Server {
         return out;
     }
 
+    public void send(Object o) throws IOException {
+        out.writeObject(o);
+        out.flush();
+    }
+
     private void listen() { // TODO LISTEN AS LONG AS YOU CAN
         boolean isRunning = true;
         while (clientSocket.isConnected()) {

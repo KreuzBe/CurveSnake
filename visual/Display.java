@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -116,6 +117,13 @@ public class Display extends JPanel implements KeyListener {
 
         visualMap = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = visualMap.createGraphics();
+
+        if (isServer)
+            try {
+                server.send(new GameInfo());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     public ArrayList<PowerUp> getPowerUps() {
