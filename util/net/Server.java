@@ -54,9 +54,11 @@ public class Server {
         while (clientSocket.isConnected()) {
 
             try {
-                if (inputConsumer != null)
+                if (inputConsumer != null) {
                     inputConsumer.accept(in.readObject());
-                // System.out.println(in.readObject().toString());
+                    in.reset();
+                    // System.out.println(in.readObject().toString());
+                }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Connection lost");

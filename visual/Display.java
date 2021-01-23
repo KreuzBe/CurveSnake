@@ -122,7 +122,9 @@ public class Display extends JPanel implements KeyListener {
 
         if (isServer)
             try {
-                server.send(new GameInfo());
+                GameInfo gi = new GameInfo();
+                //System.out.println(gi);
+                server.send(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
