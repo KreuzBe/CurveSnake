@@ -101,7 +101,7 @@ public class Moveable {
         if (!isVisible())
             return;
         try {
-            if ((map[(int) x][(int) y] & enemyBytes) != 0) {
+            if (x < 0 || y < 0 || x > Display.WIDTH || y > Display.HEIGHT || (map[(int) x][(int) y] & enemyBytes) != 0) {
                 onCrash(map[(int) x][(int) y]);
             }
         } catch (Exception e) {
