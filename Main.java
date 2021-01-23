@@ -20,7 +20,7 @@ public class Main extends Display {
             System.out.println("I AM A PLAYER!!!!!!!!!!!!!!");
             addMoveable(new Player(50, 50, 1, 1, 3, this, BYTE_PLAYER_MIN));
         } else {
-            addMoveable(new Player(50, 50, 1, 1, 3, this, BYTE_PLAYER_MIN << 1));
+            addMoveable(new Player(500, 500, -1, -1, 3, this, BYTE_PLAYER_MIN << 1));
         }
         start();
     }

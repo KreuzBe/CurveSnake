@@ -99,7 +99,7 @@ public class Display extends JPanel implements KeyListener {
         loop = new Loop(40, this::update);
 
         frame = new JFrame();
-        frame.setUndecorated(true);
+        //frame.setUndecorated(true);
         frame.setBounds(0, 0, 2 * WIDTH, 2 * HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
