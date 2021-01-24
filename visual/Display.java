@@ -165,7 +165,7 @@ public class Display extends JPanel implements KeyListener {
             try {
                 mo.update(tick);
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
             if (mo.shouldDecay())
                 removedMoveables.add(mo);
@@ -349,16 +349,7 @@ public class Display extends JPanel implements KeyListener {
                 gameOver(null, 0);
             }
 
-            for (GameInfo.ObjectContainer pu : gi.powerups) {
-                PowerUp powerUp = null;
-                for (PowerUp p : powerUps) {
-                    if (p.isRemoteControlled() && p.getDrawByte() == pu.drawByte) {
-                        powerUp = p;
-                        break;
-                    }
-                }
-                if (powerUp != null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
-            }
+            System.out.println("PU:" + gi.powerups.size());
 
             powerUps:
             for (PowerUp p : powerUps) {
@@ -371,6 +362,19 @@ public class Display extends JPanel implements KeyListener {
                     removePowerUp(p.getDrawByte());
                 }
             }
+
+            for (GameInfo.ObjectContainer pu : gi.powerups) {
+                PowerUp powerUp = null;
+                for (PowerUp p : powerUps) {
+                    if (p.isRemoteControlled() && p.getDrawByte() == pu.drawByte) {
+                        powerUp = p;
+                        break;
+                    }
+                }
+                if (powerUp != null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
+            }
+
+
             for (GameInfo.ObjectContainer oc : gi.moveables) {
                 Moveable moveable = null;
                 for (Moveable mo : addedMoveables) {
