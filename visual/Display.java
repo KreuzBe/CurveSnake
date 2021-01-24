@@ -202,7 +202,7 @@ public class Display extends JPanel implements KeyListener {
 
 
     public void addMoveable(Moveable mo) {
-        System.out.println(mo);
+        System.out.println("Added " + mo);
         boolean onRemove = false;
         for (Moveable m : removedMoveables) {
             if (mo.getDrawByte() == m.getDrawByte()) {
