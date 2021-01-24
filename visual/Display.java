@@ -109,7 +109,7 @@ public class Display extends JPanel implements KeyListener {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //  frame.setResizable(false);
-        frame.addKeyListener(this);
+        this.addKeyListener(this);
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         frame.add(this);
         frame.setAlwaysOnTop(true);

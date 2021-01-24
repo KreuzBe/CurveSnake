@@ -13,7 +13,7 @@ public class Main extends Display {
         super(true);
         ImageLoader.init();
         if (isServer())
-            player = new Player(50, 50, 1, 1, 0, this, BYTE_PLAYER_MIN);
+            player = new Player(50, 50, 1, 1, 1, this, BYTE_PLAYER_MIN);
         else
             player = new Player(500, 500, -1, 1, 5, this, BYTE_PLAYER_MIN << 1);
         addMoveable(player);
