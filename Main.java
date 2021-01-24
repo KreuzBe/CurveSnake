@@ -10,7 +10,8 @@ public class Main extends Display {
     private Enemy enemy;
 
     public Main() {
-        super(true);
+        super(true
+        );
         ImageLoader.init();
         player = new Player(50, 50, 1, 1, 5, this, BYTE_PLAYER_MIN);
         addMoveable(player);
