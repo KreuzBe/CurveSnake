@@ -117,7 +117,8 @@ public class Display extends JPanel implements KeyListener {
         frame.setLocationRelativeTo(null);
         //frame.setAlwaysOnTop(true);
         frame.setVisible(true);
-
+        frame.setAlwaysOnTop(true);
+        frame.requestFocus();
         repaint(); // causes JPanel to resize
         map = new int[WIDTH][HEIGHT];
         scaledMap = new int[WIDTH / scale][HEIGHT / scale];
@@ -436,13 +437,13 @@ public class Display extends JPanel implements KeyListener {
 
     public void paint(Graphics graphics) {
 
-        graphics.drawImage(visualMap, 0, 0, null);
+        graphics.drawImage(visualMap, 0, 0, this.getWidth(), this.getHeight(), null);
 
         for (int i = 0; i < moveables.size(); i++) {
-            graphics.drawImage(moveables.get(i).getImage(), 0, 0, null);
+            graphics.drawImage(moveables.get(i).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
         }
 
-        graphics.drawImage(foreground, 0, 0, null);
+        graphics.drawImage(foreground, 0, 0, this.getWidth(), this.getHeight(), null);
         //System.out.println("PAINT");
     }
 
