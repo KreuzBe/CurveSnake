@@ -24,7 +24,7 @@ public class Server {
     public Server(int port) {
         this.port = port;
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port, 5, null);
             System.out.println("Waiting for connection on " + InetAddress.getLocalHost().getHostAddress() + ":" + port);
             clientSocket = serverSocket.accept();
             System.out.println("Connected!");
@@ -58,10 +58,9 @@ public class Server {
             try {
                 if (inputConsumer != null) {
                     inputConsumer.accept(in.readObject());
-                    // System.out.println(in.readObject().toString());
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.err.println(e.getCause() + " " + e.getMessage());
+                System.err.println(e.getMessage());
                 System.out.println("Connection lost");
                 System.exit(0);
                 isRunning = false;

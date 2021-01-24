@@ -148,7 +148,7 @@ public class Moveable {
         }
         traceGraphics.setColor(traceColor);
         if (isRemoteControlled()) {
-            traceGraphics.setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0f));
+            traceGraphics.setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
             traceGraphics.drawLine((int) x, (int) y, (int) lastX, (int) lastY);
             lastX = x;
             lastY = y;
