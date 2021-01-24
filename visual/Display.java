@@ -222,7 +222,6 @@ public class Display extends JPanel implements KeyListener {
                     return;
             }
         }
-        System.out.println("Added " + mo);
         addedMoveables.add(mo);
     }
 
