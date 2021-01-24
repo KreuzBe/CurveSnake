@@ -61,44 +61,47 @@ public class Display extends JPanel implements KeyListener {
     public Graphics g;
     public Graphics fg;
 
+    private boolean isMultiplayer;
     private Server server;
     private Client client;
     private boolean isServer;
     private boolean isGameOver = false;
 
-    public Display() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP.\nYour input:");
-        String input = sc.nextLine();
-        if (input.isBlank()) {
-            try {
-                System.out.println("Creating server...");
-                System.out.println("Your IP is: " + InetAddress.getLocalHost().getHostAddress());
-                isServer = true;
-                server = new Server(DEFAULT_PORT);
-                server.setInputConsumer(this::handleInput);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
-        } else {
-            System.out.println("Setting up client...");
-            isServer = false;
-            try {
-                client = new Client(input, DEFAULT_PORT);
-                client.setInputConsumer(this::handleInput);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Exiting program...");
-                System.exit(-1);
+    public Display(boolean isMultiplayer) {
+        this.isMultiplayer = isMultiplayer;
+        if (isMultiplayer) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP.\nYour input:");
+            String input = sc.nextLine();
+            if (input.isBlank()) {
+                try {
+                    System.out.println("Creating server...");
+                    System.out.println("Your IP is: " + InetAddress.getLocalHost().getHostAddress());
+                    isServer = true;
+                    server = new Server(DEFAULT_PORT);
+                    server.setInputConsumer(this::handleInput);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            } else {
+                System.out.println("Setting up client...");
+                isServer = false;
+                try {
+                    client = new Client(input, DEFAULT_PORT);
+                    client.setInputConsumer(this::handleInput);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Exiting program...");
+                    System.exit(-1);
+                }
             }
         }
-
         moveables = new ArrayList<Moveable>();
         addedMoveables = new ArrayList<Moveable>();
         removedMoveables = new ArrayList<Moveable>();
         powerUps = new ArrayList<PowerUp>();
-        loop = new Loop(40, this::update);
+        loop = new Loop(60, this::update);
 
         frame = new JFrame();
         //frame.setUndecorated(true);
@@ -134,6 +137,7 @@ public class Display extends JPanel implements KeyListener {
             }
     }
 
+
     public ArrayList<PowerUp> getPowerUps() {
         return powerUps;
     }
@@ -153,15 +157,6 @@ public class Display extends JPanel implements KeyListener {
 
         System.arraycopy(keys, 0, keysOld, 0, keys.length);
 
-        try {
-            if (isServer && server != null)
-                server.send(createGameInfo());
-            else if (!isServer && client != null) {
-                client.send(createGameInfo());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         for (Moveable mo : moveables) {
             try {
@@ -178,13 +173,35 @@ public class Display extends JPanel implements KeyListener {
 
         // Foreground painting (lasts one tick)
 
-        int exR = (int) (10 * Math.sin(Math.toRadians(6 * tick))) - 5;
+
+        if (isMultiplayer) {
+            try {
+                if (isServer && server != null)
+                    server.send(createGameInfo());
+                else if (!isServer && client != null) {
+                    client.send(createGameInfo());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+//paint
+        for (Moveable mo : moveables) {
+            try {
+                mo.paint(tick);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
         for (PowerUp p : powerUps) {
             fg.drawImage(ImageLoader.images[p.getImageNumber()][(tick / 10) % 5], (int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius(), null);
         }
 
         repaint();
     }
+
 
     public void addMoveable(Moveable mo) {
         for (Moveable m : addedMoveables) {
@@ -410,14 +427,16 @@ public class Display extends JPanel implements KeyListener {
         System.out.println("THE GAME IS OVER");
         isGameOver = true;
         stop();
-        try {
-            if (isServer) {
-                server.send(createGameInfo());
-            } else {
-                client.send(createGameInfo());
+        if (isMultiplayer) {
+            try {
+                if (isServer) {
+                    server.send(createGameInfo());
+                } else {
+                    client.send(createGameInfo());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

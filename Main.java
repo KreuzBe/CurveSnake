@@ -9,13 +9,15 @@ public class Main extends Display {
     private Enemy enemy;
 
     public Main() {
+        super(false);
         ImageLoader.init();
-        if (isServer()) {
-            System.out.println("I AM A PLAYER!!!!!!!!!!!!!!");
-            addMoveable(new Player(50, 50, 1, 1, 3, this, BYTE_PLAYER_MIN));
-        } else {
-            addMoveable(new Player(500, 500, -1, -1, 3, this, BYTE_PLAYER_MIN << 1));
-        }
+
+        System.out.println("I AM A PLAYER!!!!!!!!!!!!!!");
+        player = new Player(50, 50, 1, 1, 3, this, BYTE_PLAYER_MIN);
+        addMoveable(player);
+
+        addMoveable(new Enemy(500, 500, -1, -1, 3, this, player));
+        
         start();
     }
 

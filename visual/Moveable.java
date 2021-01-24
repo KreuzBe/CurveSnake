@@ -32,6 +32,8 @@ public class Moveable {
     private int drawByte = 0b0;
     private int enemyBytes = Display.BYTE_WALL;
 
+    int radius = 10;
+
     public Moveable(float x, float y, float vx, float vy, float speed, Display display, int drawByte) {
         this.x = this.lastX = x;
         this.y = this.lastY = y;
@@ -108,12 +110,13 @@ public class Moveable {
         if ((map[(int) x][(int) y] & Display.BYTE_POWERUP) != 0) {
             PowerUp.activatePowerUp(this, map[(int) x][(int) y]);
         }
-        int radius = 10;
-        getDisplay().fg.setColor(traceColor);
-        getDisplay().fg.fillOval((int) (getX() - radius), (int) (getY() - radius), 2 * radius, 2 * radius);
 
-        if (!isVisible())
+
+        if (!isVisible) {
+            lastX = x;
+            lastY = y;
             return;
+        }
         try {
             if ((map[(int) x][(int) y] & enemyBytes) != 0) {
                 onCrash(map[(int) x][(int) y]);
@@ -134,9 +137,14 @@ public class Moveable {
             }
         }
 
+
+    }
+
+    public void paint(int tick) {
+
+        getDisplay().fg.setColor(traceColor);
+        getDisplay().fg.fillOval((int) (getX() - radius), (int) (getY() - radius), 2 * radius, 2 * radius);
         if (!isVisible) {
-            lastX = x;
-            lastY = y;
             return;
         }
         traceGraphics.setColor(traceColor);
