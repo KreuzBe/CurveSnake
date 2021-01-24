@@ -351,21 +351,18 @@ public class Display extends JPanel implements KeyListener {
             }
 
 
-//            powerUps:
-//            for (PowerUp p : powerUps) {
-//                if (p.isRemoteControlled()) {
-//                    for (GameInfo.ObjectContainer pu : gi.powerups) {
-//                        if (p.getDrawByte() == pu.drawByte) {
-//                            continue powerUps;
-//                        }
-//                    }
-//                    removePowerUp(p.getDrawByte());
-//                }
-//            }
-            ArrayList<PowerUp> copy = new ArrayList<>(powerUps);
-            for (PowerUp p : copy) {
-                removePowerUp(p.getDrawByte());
+            powerUps:
+            for (PowerUp p : powerUps) {
+                if (p.isRemoteControlled()) {
+                    for (GameInfo.ObjectContainer pu : gi.powerups) {
+                        if (p.getDrawByte() == pu.drawByte) {
+                            continue powerUps;
+                        }
+                    }
+                    removePowerUp(p.getDrawByte());
+                }
             }
+
 
             for (GameInfo.ObjectContainer pu : gi.powerups) {
                 PowerUp powerUp = null;
