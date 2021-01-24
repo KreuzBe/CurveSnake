@@ -173,7 +173,7 @@ public class Display extends JPanel implements KeyListener {
 
         // Foreground painting (lasts one tick)
 
-
+// multiplayer
         if (isMultiplayer) {
             try {
                 if (isServer && server != null)

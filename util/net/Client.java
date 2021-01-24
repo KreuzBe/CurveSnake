@@ -37,7 +37,7 @@ public class Client {
 
     private void listen() {
         boolean isRunning = true;
-        while (isRunning) {
+        while (true) {
 
             if (!socket.isConnected())
                 break;
@@ -49,6 +49,7 @@ public class Client {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Connection lost");
+                System.exit(0);
                 isRunning = false;
                 break;
             }
