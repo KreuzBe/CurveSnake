@@ -350,7 +350,6 @@ public class Display extends JPanel implements KeyListener {
                 gameOver(null, 0);
             }
 
-            System.out.println("PU:" + gi.powerups.size());
 
 //            powerUps:
 //            for (PowerUp p : powerUps) {
@@ -363,8 +362,8 @@ public class Display extends JPanel implements KeyListener {
 //                    removePowerUp(p.getDrawByte());
 //                }
 //            }
-
-            for (PowerUp p : powerUps) {
+            ArrayList<PowerUp> copy = new ArrayList<>(powerUps);
+            for (PowerUp p : copy) {
                 removePowerUp(p.getDrawByte());
             }
 
@@ -376,7 +375,7 @@ public class Display extends JPanel implements KeyListener {
                         break;
                     }
                 }
-                if (powerUp != null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
+                if (powerUp == null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
             }
 
 
