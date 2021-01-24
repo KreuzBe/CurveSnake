@@ -33,7 +33,7 @@ public class Display extends JPanel implements KeyListener {
     public static final int BYTE_SHIFT_PLAYER = 11;
     public static final int BYTE_PLAYER_MIN = 0b1 << BYTE_SHIFT_PLAYER;
     public static final int BYTE_PLAYER_MAX = 0b1 << 15;
-    private static final int DEFAULT_PORT = 80;
+    private static final int DEFAULT_PORT = 12975;
 
     private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
     public static final int WIDTH = 1600;
