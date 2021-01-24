@@ -141,7 +141,6 @@ public class Moveable {
     }
 
     public void paint(int tick) {
-
         getDisplay().fg.setColor(traceColor);
         getDisplay().fg.fillOval((int) (getX() - radius), (int) (getY() - radius), 2 * radius, 2 * radius);
         if (!isVisible) {

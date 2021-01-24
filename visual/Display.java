@@ -193,8 +193,6 @@ public class Display extends JPanel implements KeyListener {
                 e.printStackTrace();
             }
         }
-
-
         for (PowerUp p : powerUps) {
             fg.drawImage(ImageLoader.images[p.getImageNumber()][(tick / 10) % 5], (int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius(), null);
         }
@@ -204,15 +202,34 @@ public class Display extends JPanel implements KeyListener {
 
 
     public void addMoveable(Moveable mo) {
-        for (Moveable m : addedMoveables) {
-            if (mo.getDrawByte() == m.getDrawByte())
-                return;
+        System.out.println(mo);
+        boolean onRemove = false;
+        for (Moveable m : removedMoveables) {
+            if (mo.getDrawByte() == m.getDrawByte()) {
+                onRemove = true;
+                break;
+            }
         }
-        for (Moveable m : moveables) {
-            if (mo.getDrawByte() == m.getDrawByte())
-                return;
+        if (!onRemove) {
+            for (Moveable m : addedMoveables) {
+                if (mo.getDrawByte() == m.getDrawByte())
+                    return;
+            }
+            for (Moveable m : moveables) {
+                if (mo.getDrawByte() == m.getDrawByte())
+                    return;
+            }
         }
         addedMoveables.add(mo);
+    }
+
+    public void removeMoveable(Moveable mo) {
+        for (int x = 0; x < Display.WIDTH; x++) {
+            for (int y = 0; y < Display.HEIGHT; y++) {
+                unsetMapByte(x, y, mo.getDrawByte());
+            }
+        }
+        removedMoveables.add(mo);
     }
 
     public void onUpdate(int tick) {
@@ -290,7 +307,7 @@ public class Display extends JPanel implements KeyListener {
 
         if (powerUp == null)
             return;
-        System.out.println("Remove PowerUp " + Integer.toBinaryString(power));
+        //  System.out.println("Remove PowerUp " + Integer.toBinaryString(power));
         for (int rx = -powerUp.getRadius() - 3; rx < powerUp.getRadius() + 3; rx++) {
             for (int ry = -powerUp.getRadius() - 3; ry < powerUp.getRadius() + 3; ry++) {
                 if (rx * rx + ry + ry <= powerUp.getRadius() * powerUp.getRadius() + 4) {

@@ -15,13 +15,12 @@ public class Enemy extends Moveable {
     private final int scale;
     private ArrayList<Node> avoidNext = new ArrayList<Node>();
     private Loop pathFindLoop;
-    private boolean[][] lastAvoidedDeaths;
 
     public Enemy(int x, int y, int vx, int vy, int speed, Display display, Moveable target) {
         super(x, y, vx, vy, speed, display, Display.BYTE_NPC_MIN);
         this.target = this.mainTarget = target;
         setDrawByte(Display.BYTE_NPC_MIN);
-        addEnemyByte(Display.BYTE_PLAYER);
+        addEnemyByte(Display.BYTE_PLAYER); // You like nobody
         addEnemyByte(Display.BYTE_NPC);
         addEnemyByte(Display.BYTE_WALL);
         setTraceColor(Color.RED);
@@ -43,13 +42,13 @@ public class Enemy extends Moveable {
         }
     }
 
-    private void pathFind() throws Exception {
+    private void pathFind() {
         int closedNodes = 0;
         ArrayList<Node> openNodes = new ArrayList<Node>();
         int[][] map = getDisplay().getScaledMap();
         boolean hasObstacle = false;
         Node[][] surroundingNodes;
-        int tx = (int) (getX() + (getSpeed() + scale) * getVX()) / scale;
+        int tx = (int) (getX() + (getSpeed() + scale) * getVX()) / scale; // caluculating path from target to enemy because it is then easier to track the next point to go
         int ty = (int) (getY() + (getSpeed() + scale) * getVY()) / scale;
         int x = (int) (target.getX() + scale * target.getVX()) / scale;
         int y = (int) (target.getY() + scale * target.getVY()) / scale;
@@ -59,7 +58,7 @@ public class Enemy extends Moveable {
 
         for (Node n : avoidNext) {
             n.closed = true; // dont go here again... was bad last time!!!
-            n.way = 0; // I dont care about the way
+            n.way = 0; // I dont care about the way, could be Integer.MAX_VALUE
             n.distance = Math.sqrt(((n.x - tx) * (n.x - tx) + (n.y - ty) * (n.y - ty)));
             n.prevNode = null;
             //   openNodes.add(n);
@@ -68,60 +67,55 @@ public class Enemy extends Moveable {
 
         while (node.x != tx || node.y != ty) {
 
-            if (closedNodes > map.length * map[0].length / 5) { // It is unlikely that there is a solution... just ignore it
-                // System.out.println("Many closed nodes: " + avoidDeath());
+            if (closedNodes > map.length * map[0].length / 5) { // It is unlikely that there is a solution... just ignore it for the sake of performance
                 return;
             }
 
             if (openNodes.size() > map.length * map[0].length) {
-                //  System.out.println("TOO MANY NODES");
                 return;
             }
             node = null;
             for (Node n : openNodes) {
-                if (!n.isClosed() && (node == null || (n.way + n.distance <= node.way + node.distance)))
+                if (n.isOpen() && (node == null || (n.way + n.distance <= node.way + node.distance)))
                     node = n;
             }
-            if (node == null) {
-                System.out.println("NO OPEN NODES: " + avoidDeath());
+            if (node == null) { // usually when either target or enemy is surrounded by bad nodes
                 avoidDeath();
-                //System.exit(0);
                 return;
             }
 
-            int surr = 1;
-            surroundingNodes = new Node[2 * surr + 1][2 * surr + 1];
 
-            for (int ix = -surr; ix <= surr; ix++) {
-                for (int iy = -surr; iy <= surr; iy++) {
+            surroundingNodes = new Node[3][3];
+
+            for (int ix = -1; ix <= 1; ix++) {
+                for (int iy = -1; iy <= 1; iy++) {
                     for (Node n : openNodes) {
                         if (n.x == node.x + ix && n.y == node.y + iy) {
-                            surroundingNodes[ix + surr][iy + surr] = n;
+                            surroundingNodes[ix + 1][iy + 1] = n;
                         }
                     }
                 }
             }
 
-            for (int ix = -surr; ix <= surr; ix++) {
-                for (int iy = -surr; iy <= surr; iy++) {
+            for (int ix = -1; ix <= 1; ix++) {
+                for (int iy = -1; iy <= 1; iy++) {
                     if (ix == 0 && iy == 0)
                         continue;
                     try {
                         if ((map[node.x + ix][node.y + iy] & getEnemyBytes()) == 0) {
-                            if (surroundingNodes[ix + surr][iy + surr] == null) {
-                                Node nn = new Node(node.x + ix, node.y + iy, node.way + 1, Math.sqrt(((node.x + ix - tx) * (node.x + ix - tx) + (node.y + iy - ty) * (node.y + iy - ty))), node);
-                                openNodes.add(nn);
-                            } else if (!surroundingNodes[ix + surr][iy + surr].isClosed()) {
-                                if (node.way + 1 < surroundingNodes[ix + surr][iy + surr].way) {
-                                    surroundingNodes[ix + surr][iy + surr].way = node.way + 1;
-                                    surroundingNodes[ix + surr][iy + surr].prevNode = node;
+                            if (surroundingNodes[ix + 1][iy + 1] == null) { // create new node
+                                openNodes.add(new Node(node.x + ix, node.y + iy, node.way + 1, Math.sqrt(((node.x + ix - tx) * (node.x + ix - tx) + (node.y + iy - ty) * (node.y + iy - ty))), node));
+                            } else if (surroundingNodes[ix + 1][iy + 1].isOpen()) { // use existing node
+                                if (node.way + 1 < surroundingNodes[ix + 1][iy + 1].way) {
+                                    surroundingNodes[ix + 1][iy + 1].way = node.way + 1;
+                                    surroundingNodes[ix + 1][iy + 1].prevNode = node;
                                 }
                             }
                         } else {
                             node.hasBadNeighbours = true;
-                            if (surroundingNodes[ix + surr][iy + surr] != null) {
-                                surroundingNodes[ix + surr][iy + surr].close();
-                                avoidNext.add(surroundingNodes[ix + surr][iy + surr]);
+                            if (surroundingNodes[ix + 1][iy + 1] != null) { // might be added with last nodes
+                                surroundingNodes[ix + 1][iy + 1].close();
+                                avoidNext.add(surroundingNodes[ix + 1][iy + 1]);
                             }
                         }
                     } catch (Exception ignored) {
@@ -131,42 +125,33 @@ public class Enemy extends Moveable {
 
             node.close();
             avoidNext.add(node);
-            //  getDisplay().fg.setColor(Color.BLUE);
-            // getDisplay().fg.drawRect(node.x * scale, node.y * scale, scale, scale);
-            //getDisplay().repaint();
             closedNodes++;
         }
         int c = 0;
-        Node faceNode = null;
+        Node faceNode = null; // The node on wich the path touches a bad node, most likely a curve
         while (node.prevNode != null) {
             c++;
-            //   getDisplay().fg.setColor(Color.ORANGE);
-            //  getDisplay().fg.drawRect(node.x * scale, node.y * scale, scale, scale);
             avoidNext.remove(node);
             node = node.prevNode;
             if (!hasObstacle && node.hasBadNeighbours) {
                 hasObstacle = true;
                 faceNode = node;
-                //  getDisplay().fg.setColor(Color.RED);
-                //   getDisplay().fg.drawRect(node.x * scale, node.y * scale, scale, scale);
             }
         }
 
         if (!hasObstacle) {
             lookAt(target.getX(), target.getY(), 3);
         } else {
-            lookAt(faceNode.x * scale + scale / 2f, faceNode.y * scale + scale / 2f, 7);
+            lookAt(faceNode.x * scale + scale / 2f, faceNode.y * scale + scale / 2f, 7); // look at the center of this node to avoid crash
         }
     }
 
-    private boolean avoidDeath() {
-        removeEnemyByte(getDrawByte());
+    private void avoidDeath() {
+        removeEnemyByte(getDrawByte()); // TODO find a good way to ignore enemies drawByte it just did, but not the ones it did longer ago. (are two bits per Enemy good?)
 
         int[][] map = getDisplay().getMap();
         int radius = (int) (6 * getSpeed());
-        if (lastAvoidedDeaths == null)
-            lastAvoidedDeaths = new boolean[radius][radius];
-        boolean ret = false;
+
         int cW = 0;
         double dx = 0;
         double dy = 0;
@@ -174,32 +159,27 @@ public class Enemy extends Moveable {
             for (int iy = -radius; iy <= radius; iy++) {
                 try {
                     if ((ix * ix + iy * iy) < radius * radius && ((map[((int) (getX() + ix))][((int) (getY() + iy))] & getEnemyBytes()) != 0)) {
-                        //  if (!lastAvoidedDeaths[ix + radius][iy + radius]) {
-                        ret = true;
                         cW++;
                         dx += ix;
                         dy += iy;
-                        //}
-                        lastAvoidedDeaths[ix + radius][iy + radius] = true;
-                    } else {
-                        lastAvoidedDeaths[ix + radius][iy + radius] = false;
                     }
                 } catch (Exception ignored) {
                 }
             }
         }
         addEnemyByte(getDrawByte());
+
         if (cW != 0) {
             dx /= cW;
             dy /= cW;
+
             if (dx == 0)
-                dx = .001 * getVX();
+                dx = .01 * getVX();
             if (dy == 0)
-                dy = .001 * getVY();
+                dy = .01 * getVY();
 
             lookAway((float) (getX() + dx), (float) (getY() + dy), 7);
         }
-        return ret;
     }
 
     @Override
@@ -218,17 +198,14 @@ public class Enemy extends Moveable {
                         return;
                     }
                 }
-                if (newTarget == null) {
-                    return;
-                } else
-                    setTarget(newTarget);
+                return;
             } else {
                 setTarget(mainTarget);
             }
         }
 
         try {
-            //pathFind();
+            //pathFind(); <- now done in extra thread for the sake of performance
             avoidDeath();
         } catch (Exception e) {
             System.out.println("ERR WHILE CALCULATING SHORTEST PATH: " + e.getMessage());
@@ -241,7 +218,7 @@ public class Enemy extends Moveable {
             } else {
                 gap--;
             }
-        } else if (Math.random() < 0.000) {
+        } else if (Math.random() < 0.01) {
             setVisible(false);
             gap = 15;
         }
@@ -267,13 +244,10 @@ public class Enemy extends Moveable {
 
     private void die() {
         stop();
-        decay();
-        for (int x = 0; x < Display.WIDTH; x++) {
-            for (int y = 0; y < Display.HEIGHT; y++) {
-                getDisplay().unsetMapByte(x, y, getDrawByte());
-            }
-        }
-        getDisplay().addMoveable(new Enemy((int) (Display.WIDTH * Math.random()), (int) (Display.HEIGHT * Math.random()), (int) (20 * Math.random() - 10), (int) (20 * Math.random() - 10), 3, getDisplay(), target));
+        getDisplay().removeMoveable(this);
+        Enemy newMe = new Enemy((int) (Display.WIDTH * Math.random()), (int) (Display.HEIGHT * Math.random()), 1, 1, (int) getSpeed(), getDisplay(), mainTarget);
+        newMe.lookAt(target.getX(), target.getY(), 360);
+        getDisplay().addMoveable(newMe);
     }
 
     public void stop() {
@@ -297,8 +271,8 @@ public class Enemy extends Moveable {
             this.prevNode = prevNode;
         }
 
-        private boolean isClosed() {
-            return closed;
+        private boolean isOpen() {
+            return !closed;
         }
 
         private void close() {

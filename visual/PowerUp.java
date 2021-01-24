@@ -38,7 +38,7 @@ public class PowerUp extends Moveable {
     }
 
     public static void activatePowerUp(Moveable moveable, int code) {
-        System.out.println("PowerUp activated: 0b" + Integer.toBinaryString(code));
+        //     System.out.println("PowerUp activated: 0b" + Integer.toBinaryString(code));
         if ((code & Display.BYTE_POWERUP) == 0)
             return;
 
@@ -53,7 +53,7 @@ public class PowerUp extends Moveable {
             moveable.getDisplay().clear();
         }
 
-        if ((code & (Display.BYTE_POWERUP_MIN << 2)) != 0) { // Bomb
+        if ((code & (Display.BYTE_POWERUP_MIN << 2)) != 0) { // clear me
             moveable.clear();
 
             for (int x = 0; x < Display.WIDTH; x++) {
