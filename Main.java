@@ -10,10 +10,12 @@ public class Main extends Display {
     private Enemy enemy;
 
     public Main() {
-        super(true
-        );
+        super(true);
         ImageLoader.init();
-        player = new Player(50, 50, 1, 1, 5, this, BYTE_PLAYER_MIN);
+        if (isServer())
+            player = new Player(50, 50, 1, 1, 5, this, BYTE_PLAYER_MIN);
+        else
+            player = new Player(500, 500, -1, 1, 5, this, BYTE_PLAYER_MIN << 1);
         addMoveable(player);
         // addMoveable(new Enemy(500, 500, -1, -1, 3, this, player));
         start();

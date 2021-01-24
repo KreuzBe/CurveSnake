@@ -127,6 +127,7 @@ public class Display extends JPanel implements KeyListener {
         visualMap = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = visualMap.createGraphics();
 
+
         if (isServer)
             try {
                 GameInfo gi = new GameInfo();
@@ -202,7 +203,6 @@ public class Display extends JPanel implements KeyListener {
 
 
     public void addMoveable(Moveable mo) {
-        System.out.println("Added " + mo);
         boolean onRemove = false;
         for (Moveable m : removedMoveables) {
             if (mo.getDrawByte() == m.getDrawByte()) {
@@ -220,6 +220,7 @@ public class Display extends JPanel implements KeyListener {
                     return;
             }
         }
+        System.out.println("Added " + mo);
         addedMoveables.add(mo);
     }
 
@@ -334,7 +335,6 @@ public class Display extends JPanel implements KeyListener {
 
         if (obj instanceof GameInfo) {
             GameInfo gi = (GameInfo) obj;
-
             if (gi.stop) {
                 gameOver(null, 0);
             }
