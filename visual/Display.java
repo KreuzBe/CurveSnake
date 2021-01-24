@@ -108,7 +108,7 @@ public class Display extends JPanel implements KeyListener {
         frame.setBounds(0, 0, 2 * WIDTH, 2 * HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      //  frame.setResizable(false);
+        //  frame.setResizable(false);
         frame.addKeyListener(this);
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         frame.add(this);
@@ -283,6 +283,7 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void createPowerUp(PowerUp powerUp) {
+        System.out.println("created PowerUp: 0b" + powerUp.getDrawByte());
         for (PowerUp p : powerUps)
             if (p.getDrawByte() == powerUp.getDrawByte())
                 return;
@@ -299,6 +300,7 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void removePowerUp(int power) {
+        System.out.println("created PowerUp: 0b" + power);
         PowerUp powerUp = null;
         for (PowerUp p : powerUps) {
             if ((power & p.getDrawByte()) != 0) {
