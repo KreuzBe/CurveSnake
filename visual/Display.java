@@ -118,7 +118,7 @@ public class Display extends JPanel implements KeyListener {
         frame.setUndecorated(true);
         frame.setAlwaysOnTop(true);
         frame.setVisible(true);
-        frame.requestFocus();
+        frame.setAlwaysOnTop(true);
 
         repaint(); // causes JPanel to resize
         map = new int[WIDTH][HEIGHT];
@@ -331,6 +331,12 @@ public class Display extends JPanel implements KeyListener {
                 gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
             }
         }
+
+        for (PowerUp p : powerUps) {
+            if (!p.isRemoteControlled()) {
+                gi.addPowerUp(p.getX(), p.getY(), p.getRadius(), p.getDrawByte());
+            }
+        }
         gi.stop = isGameOver;
         return gi;
     }
@@ -343,6 +349,28 @@ public class Display extends JPanel implements KeyListener {
                 gameOver(null, 0);
             }
 
+            for (GameInfo.ObjectContainer pu : gi.powerups) {
+                PowerUp powerUp = null;
+                for (PowerUp p : powerUps) {
+                    if (p.isRemoteControlled() && p.getDrawByte() == pu.drawByte) {
+                        powerUp = p;
+                        break;
+                    }
+                }
+                if (powerUp != null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
+            }
+
+            powerUps:
+            for (PowerUp p : powerUps) {
+                if (p.isRemoteControlled()) {
+                    for (GameInfo.ObjectContainer pu : gi.powerups) {
+                        if (p.getDrawByte() == pu.drawByte) {
+                            continue powerUps;
+                        }
+                    }
+                    removePowerUp(p.getDrawByte());
+                }
+            }
             for (GameInfo.ObjectContainer oc : gi.moveables) {
                 Moveable moveable = null;
                 for (Moveable mo : addedMoveables) {

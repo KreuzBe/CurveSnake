@@ -9,12 +9,14 @@ public class PowerUp extends Moveable {
     private int radius;
     private int drawByte = 0;
     private int imageNumber;
+    private boolean isRemoteControlled;
 
-    public PowerUp(float x, float y, int radius, int drawByte, Display display) {
+    public PowerUp(float x, float y, int radius, int drawByte, Display display, boolean isRemoteControlled) {
         super(x, y, 0f, 0f, 0f, display, drawByte);
         this.radius = radius;
         this.drawByte = drawByte;
         this.imageNumber = ((int) (Math.log(drawByte) / Math.log(2)) - 1); //
+        this.isRemoteControlled = isRemoteControlled;
     }
 
     public int getRadius() {

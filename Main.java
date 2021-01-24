@@ -23,9 +23,17 @@ public class Main extends Display {
 
     @Override
     public void onUpdate(int tick) {
-
-
+        if (isServer()) {
+            if (Math.random() < 0.01) {
+                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN, this, false));
+            } else if (Math.random() < 0.0005) {
+                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 1, this, false));
+            } else if (Math.random() < 0.001) {
+                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 2, this, false));
+            }
+        }
     }
+
 
     public static void main(String[] args) {
         new Main();
