@@ -46,8 +46,14 @@ public class Server {
 
     public void send(Object o) throws IOException {
         if (!serverSocket.isClosed() && !clientSocket.isClosed()) {
-            out.writeObject(o);
-            out.flush();
+            try {
+                out.writeObject(o);
+                out.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
+
         }
     }
 
