@@ -11,6 +11,7 @@ public class Main extends Display {
 
 
     public Main() {
+        super(null);
         ImageLoader.init();
     }
 

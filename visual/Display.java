@@ -6,8 +6,6 @@ import util.net.Client;
 import util.net.GameInfo;
 import util.net.Server;
 import visual.moveable.Enemy;
-import visual.moveable.Player;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Display extends JPanel implements KeyListener {
 
@@ -69,8 +65,8 @@ public class Display extends JPanel implements KeyListener {
 
     private GameCreator gc;
 
-    public Display() {
-        GameCreator.createGame(null, this::initGame);
+    public Display(GameCreator gc) {
+        GameCreator.createGame(gc, this::initGame);
     }
 
     private void initGame(GameCreator gc) {
@@ -484,7 +480,7 @@ public class Display extends JPanel implements KeyListener {
             }
         }
         frame.dispose();
-        GameCreator.createGame(gc, this::initGame);
+        new Display(gc);
     }
 }
 
