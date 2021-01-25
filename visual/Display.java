@@ -339,6 +339,7 @@ public class Display extends JPanel implements KeyListener {
             GameInfo gi = (GameInfo) obj;
             if (gi.stop) {
                 gameOver(null, 0);
+                return;
             }
 
             for (GameInfo.ObjectContainer pu : gi.powerups) {
