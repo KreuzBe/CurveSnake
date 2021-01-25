@@ -48,7 +48,7 @@ public class Client {
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
                 System.out.println("Connection lost");
-                System.exit(0);
+                //  System.exit(0);
                 isRunning = false;
                 break;
             }
