@@ -73,5 +73,11 @@ public class Client {
 
     public void stop() {
         isRunning = false;
+        try {
+            in.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

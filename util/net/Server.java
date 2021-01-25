@@ -92,5 +92,12 @@ public class Server {
 
     public void stop() {
         isRunning = false;
+        try {
+            in.close();
+            clientSocket.close();
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
