@@ -61,8 +61,14 @@ public class Client {
     }
 
     public void send(Object o) throws IOException {
-        out.writeObject(o);
-        out.flush();
+        try {
+            out.writeObject(o);
+            out.flush();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+
     }
 
     public void stop() {

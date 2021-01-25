@@ -58,7 +58,7 @@ public class Server {
                 out.writeObject(o);
                 out.flush();
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
                 System.exit(0);
             }
 
