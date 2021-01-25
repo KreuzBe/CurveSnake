@@ -20,9 +20,23 @@ public class GameCreator {
     private Client client;
     private Server server;
 
+    private String connectedIp = "";
+
 
     public GameCreator(Consumer<GameCreator> gameStartAction) {
         initGC(gameStartAction);
+    }
+
+    public boolean isServer() {
+        return isServer;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public Server getServer() {
+        return server;
     }
 
     private void initGC(Consumer<GameCreator> gameStartAction) {
@@ -39,6 +53,7 @@ public class GameCreator {
 
         JPanel tabCreate;
         JTextArea taCreate;
+        JCheckBox btnToggle;
         JButton btnCreate;
 
 
@@ -60,6 +75,7 @@ public class GameCreator {
         tabbedPane.addTab("Connect", tabConnect);
         tabConnect.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         tfConnect = new JTextField();
+        tfConnect.setText(connectedIp);
         tfConnect.setBounds(0, 0, 200, 50);
         tfConnect.setBorder(BorderFactory.createTitledBorder("Host ip:"));
         tfConnect.setPreferredSize(tfConnect.getSize());
@@ -72,6 +88,7 @@ public class GameCreator {
             isServer = false;
             try {
                 client = new Client(tfConnect.getText(), Display.DEFAULT_PORT);
+                connectedIp = tfConnect.getText();
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(0);
@@ -84,26 +101,36 @@ public class GameCreator {
         tabbedPane.addTab("Create Server", tabCreate);
         tabCreate.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         taCreate = new JTextArea();
-        String text = "";
-        try {
-            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-            for (NetworkInterface netint : Collections.list(nets)) {
-                if (netint.getHardwareAddress() == null || !netint.isUp()) continue;
-                text += netint.getDisplayName() + "(" + netint.getName() + ")\n";
-                Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
-                for (InetAddress inetAddress : Collections.list(inetAddresses)) {
-                    if (!inetAddress.isLinkLocalAddress())
-                        text += "   >    " + inetAddress.getHostAddress() + "\n";
+        taCreate.setEditable(false);
+
+
+        btnToggle = new JCheckBox();
+        btnToggle.setBounds(0, 0, 2000, 500);
+        btnToggle.setToolTipText("Toggle IP-view");
+        btnToggle.addActionListener(a -> {
+            String string = "";
+            if (btnToggle.isSelected()) {
+
+                try {
+                    Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+                    for (NetworkInterface netint : Collections.list(nets)) {
+                        if (netint.getHardwareAddress() == null || !netint.isUp()) continue;
+                        string += netint.getDisplayName() + "(" + netint.getName() + ")\n";
+                        Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                        for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                            if (!inetAddress.isLinkLocalAddress())
+                                string += "   >    " + inetAddress.getHostAddress() + "\n";
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        taCreate.setText(text);
-        taCreate.setEditable(false);
-        tabCreate.add(taCreate);
+            taCreate.setText(string);
+        });
+        tabCreate.add(btnToggle);
 
-        btnCreate = new JButton("Connect");
+        btnCreate = new JButton("Create server");
         btnCreate.setBounds(0, 0, 200, 500);
         btnCreate.addActionListener(a -> {
             isMultiplayer = true;
@@ -112,15 +139,15 @@ public class GameCreator {
             gameStartAction.accept(this);
         });
         tabCreate.add(btnCreate);
+        tabCreate.add(taCreate);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, 640, 360);
+        frame.setBounds(0, 0, 320, 360);
         frame.setLocationRelativeTo(null);
         frame.add(tabbedPane);
         frame.setResizable(false);
 
         frame.setVisible(true);
-        System.out.println("created");
     }
 
     public boolean isMultiplayer() {

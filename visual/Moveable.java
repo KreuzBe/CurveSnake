@@ -147,11 +147,10 @@ public class Moveable {
         }
         traceGraphics.setColor(traceColor);
         if (isRemoteControlled()) {
-            traceGraphics.setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
-            traceGraphics.drawLine((int) x, (int) y, (int) lastX, (int) lastY);
+            lookAt(lastX, lastY, 360);
+            setSpeed((float) Math.sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY)));
             lastX = x;
             lastY = y;
-            return;
         }
         for (int i = 0; i < getSpeed(); i++) {
             traceGraphics.fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);

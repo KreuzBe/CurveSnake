@@ -80,7 +80,9 @@ public class Display extends JPanel implements KeyListener {
             System.exit(0);
         this.isMultiplayer = gc.isMultiplayer();
         if (isMultiplayer) {
-
+            isServer = gc.isServer();
+            this.client = gc.getClient();
+            this.server = gc.getServer();
         }
         moveables = new ArrayList<Moveable>();
         addedMoveables = new ArrayList<Moveable>();
