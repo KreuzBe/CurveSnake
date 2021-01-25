@@ -27,7 +27,8 @@ public class Loop {
 
     public void stop() {
         isRunning = false;
-        loopThread.interrupt();
+        if (loopThread.isAlive())
+            loopThread.interrupt();
     }
 
     public boolean isRunning() {
