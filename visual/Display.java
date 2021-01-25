@@ -76,8 +76,6 @@ public class Display extends JPanel implements KeyListener {
     private void initGame(GameCreator gc) {
         this.gc = gc;
         System.out.println("INIT GAME");
-        if (gc.isMultiplayer())
-            System.exit(0);
         this.isMultiplayer = gc.isMultiplayer();
         if (isMultiplayer) {
             isServer = gc.isServer();
