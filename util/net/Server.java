@@ -1,5 +1,7 @@
 package util.net;
 
+import visual.Display;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -20,6 +22,7 @@ public class Server {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private boolean isRunning;
+    private Display display;
 
     private Consumer<Object> inputConsumer;
 
@@ -76,6 +79,8 @@ public class Server {
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
                 System.out.println("Connection lost");
+                if (display != null)
+                    display.gameOver(null, 0);
                 //  System.exit(0);
                 isRunning = false;
                 break;
@@ -99,5 +104,13 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setDisplay(Display display) {
+        this.display = display;
+    }
+
+    public Display getDisplay() {
+        return display;
     }
 }

@@ -1,5 +1,7 @@
 package util.net;
 
+import visual.Display;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,6 +19,7 @@ public class Client {
     private boolean isRunning;
 
     private Consumer<Object> inputConsumer;
+    private Display display;
 
     public Client(String host, int port) throws IOException {
         this.host = host;
@@ -48,6 +51,8 @@ public class Client {
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
                 System.out.println("Connection lost");
+                if (display != null)
+                display.gameOver(null,0);
                 //  System.exit(0);
                 isRunning = false;
                 break;
@@ -66,6 +71,7 @@ public class Client {
             out.flush();
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            stop();
             //     System.exit(0);
         }
 
@@ -79,5 +85,13 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setDisplay(Display display) {
+        this.display = display;
+    }
+
+    public Display getDisplay() {
+        return display;
     }
 }
