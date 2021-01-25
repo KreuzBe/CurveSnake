@@ -481,7 +481,7 @@ public class Display extends JPanel implements KeyListener {
         }
 
         onGameOver();
-        //  frame.dispose();
+        frame.dispose();
     }
 
     public void onGameOver() {
