@@ -28,17 +28,6 @@ public class GameCreator {
         initGC(gameStartAction);
     }
 
-    public boolean isServer() {
-        return isServer;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public Server getServer() {
-        return server;
-    }
 
     private void initGC(Consumer<GameCreator> gameStartAction) {
         client = null;
@@ -161,6 +150,18 @@ public class GameCreator {
 
     public boolean isMultiplayer() {
         return isMultiplayer;
+    }
+
+    public boolean isServer() {
+        return isServer;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public Server getServer() {
+        return server;
     }
 
     public static void createGame(GameCreator gameCreator, Consumer<GameCreator> creatorConsumer) {

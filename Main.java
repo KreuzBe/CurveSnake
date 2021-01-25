@@ -8,8 +8,6 @@ import visual.moveable.Player;
 
 public class Main extends Display {
 
-    private Moveable player;
-
 
     public Main(GameCreator gc) {
         super(gc);
@@ -18,6 +16,7 @@ public class Main extends Display {
 
     @Override
     public void onGameReady() {
+        Moveable player;
         if (isMultiplayer()) {
             if (isServer()) {
                 player = new Enemy(50, 50, 1, 1, 3, this, null);

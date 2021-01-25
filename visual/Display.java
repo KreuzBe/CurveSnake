@@ -71,7 +71,6 @@ public class Display extends JPanel implements KeyListener {
 
     private void initGame(GameCreator gc) {
         this.gc = gc;
-        System.out.println("INIT GAME");
         this.isMultiplayer = gc.isMultiplayer();
         if (isMultiplayer) {
             isServer = gc.isServer();
@@ -169,7 +168,7 @@ public class Display extends JPanel implements KeyListener {
         moveables.removeAll(removedMoveables);
         removedMoveables.clear();
 
-        // Foreground painting (lasts one tick)
+
 
 // multiplayer
         if (isMultiplayer) {
