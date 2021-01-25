@@ -19,6 +19,7 @@ public class Server {
     private Socket clientSocket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private boolean isRunning;
 
     private Consumer<Object> inputConsumer;
 
@@ -65,7 +66,7 @@ public class Server {
     }
 
     private void listen() { // TODO LISTEN AS LONG AS YOU CAN
-        boolean isRunning = true;
+        isRunning = true;
         while (clientSocket.isConnected()) {
 
             try {
@@ -87,5 +88,9 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stop() {
+        isRunning = false;
     }
 }

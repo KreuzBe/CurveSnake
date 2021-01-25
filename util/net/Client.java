@@ -14,6 +14,7 @@ public class Client {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private boolean isRunning;
 
     private Consumer<Object> inputConsumer;
 
@@ -36,7 +37,7 @@ public class Client {
     }
 
     private void listen() {
-        boolean isRunning = true;
+        isRunning = true;
         while (true) {
 
             if (!socket.isConnected())
@@ -64,7 +65,7 @@ public class Client {
         out.flush();
     }
 
-    public ObjectOutputStream getOut() {
-        return out;
+    public void stop() {
+        isRunning = false;
     }
 }
