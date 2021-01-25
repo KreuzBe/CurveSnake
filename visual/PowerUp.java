@@ -47,17 +47,20 @@ public class PowerUp extends Moveable {
         if ((code & (Display.BYTE_POWERUP_MIN)) != 0) { // clear field
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);
             if (moveable instanceof Player)
-                ((Player) moveable).addToScore(1);
+                ((Player) moveable).addToScore(5);
         }
 
         if ((code & (Display.BYTE_POWERUP_MIN << 1)) != 0) { // clear field
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);
+            if (moveable instanceof Player)
+                ((Player) moveable).addToScore(1);
             moveable.getDisplay().clear();
         }
 
         if ((code & (Display.BYTE_POWERUP_MIN << 2)) != 0) { // clear me
             moveable.clear();
-
+            if (moveable instanceof Player)
+                ((Player) moveable).addToScore(3);
             for (int x = 0; x < Display.WIDTH; x++) {
                 for (int y = 0; y < Display.HEIGHT; y++) {
                     moveable.getDisplay().unsetMapByte(x, y, moveable.getDrawByte());

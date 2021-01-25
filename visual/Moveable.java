@@ -123,7 +123,6 @@ public class Moveable {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            //  System.exit(0);
         }
 
         for (int i = -radius; i <= radius; i++) {

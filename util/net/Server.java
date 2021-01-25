@@ -2,8 +2,13 @@ package util.net;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 public class Server {
@@ -24,8 +29,8 @@ public class Server {
     public Server(int port) {
         this.port = port;
         try {
-            serverSocket = new ServerSocket(port, 5, null);
-            System.out.println("Waiting for connection on " + InetAddress.getLocalHost().getHostAddress() + ":" + port);
+            serverSocket = new ServerSocket(port);
+            System.out.println("Waiting for connection...");
             clientSocket = serverSocket.accept();
             System.out.println("Connected!");
 
@@ -35,9 +40,11 @@ public class Server {
             listeningThread = new Thread(this::listen, "Listening Thread");
             listeningThread.setDaemon(true);
             listeningThread.start();
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public ObjectOutputStream getOut() {

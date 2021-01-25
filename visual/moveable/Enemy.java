@@ -142,7 +142,7 @@ public class Enemy extends Moveable {
         if (!hasObstacle) {
             lookAt(target.getX(), target.getY(), 3);
         } else {
-            lookAt(faceNode.x * scale + scale / 2f, faceNode.y * scale + scale / 2f, 7); // look at the center of this node to avoid crash
+            lookAt(faceNode.x * scale + scale / 2f, faceNode.y * scale + scale / 2f, 3); // look at the center of this node to avoid crash
         }
     }
 

@@ -1,23 +1,23 @@
 package visual;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.event.*;
-import javax.swing.*;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Scanner;
-
+import util.GameCreator;
 import util.Loop;
 import util.net.Client;
 import util.net.GameInfo;
 import util.net.Server;
-import visual.Moveable;
 import visual.moveable.Enemy;
 import visual.moveable.Player;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Display extends JPanel implements KeyListener {
 
@@ -33,7 +33,7 @@ public class Display extends JPanel implements KeyListener {
     public static final int BYTE_SHIFT_PLAYER = 11;
     public static final int BYTE_PLAYER_MIN = 0b1 << BYTE_SHIFT_PLAYER;
     public static final int BYTE_PLAYER_MAX = 0b1 << 15;
-    private static final int DEFAULT_PORT = 12975;
+    public static final int DEFAULT_PORT = 4444;
 
     private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
     public static final int WIDTH = 1600;
@@ -67,35 +67,20 @@ public class Display extends JPanel implements KeyListener {
     private boolean isServer;
     private boolean isGameOver = false;
 
-    public Display(boolean isMultiplayer) {
-        this.isMultiplayer = isMultiplayer;
+    private GameCreator gc;
+
+    public Display() {
+        GameCreator.createGame(null, this::initGame);
+    }
+
+    private void initGame(GameCreator gc) {
+        this.gc = gc;
+        System.out.println("INIT GAME");
+        if (gc.isMultiplayer())
+            System.exit(0);
+        this.isMultiplayer = gc.isMultiplayer();
         if (isMultiplayer) {
-            Scanner sc = new Scanner(System.in);
-            System.out.println("If you want to create a Server, enter nothing.\nElse enter your hosts IP.\nYour input:");
-            String input = sc.nextLine();
-            if (input.isBlank()) {
-                try {
-                    System.out.println("Creating server...");
-                    System.out.println("Your IP is: " + InetAddress.getLocalHost().getHostAddress());
-                    isServer = true;
-                    server = new Server(DEFAULT_PORT);
-                    server.setInputConsumer(this::handleInput);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
-            } else {
-                System.out.println("Setting up client...");
-                isServer = false;
-                try {
-                    client = new Client(input, DEFAULT_PORT);
-                    client.setInputConsumer(this::handleInput);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Exiting program...");
-                    System.exit(-1);
-                }
-            }
+
         }
         moveables = new ArrayList<Moveable>();
         addedMoveables = new ArrayList<Moveable>();
@@ -122,7 +107,9 @@ public class Display extends JPanel implements KeyListener {
 
         this.grabFocus();
 
-        repaint(); // causes JPanel to resize
+        keys = new boolean[256];
+        keysOld = new boolean[256];
+
         map = new int[WIDTH][HEIGHT];
         scaledMap = new int[WIDTH / scale][HEIGHT / scale];
 
@@ -140,8 +127,14 @@ public class Display extends JPanel implements KeyListener {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        onGameReady();
     }
 
+
+    public void onGameReady() {
+
+    }
 
     public ArrayList<PowerUp> getPowerUps() {
         return powerUps;
@@ -285,7 +278,6 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void createPowerUp(PowerUp powerUp) {
-        System.out.println("created PowerUp: 0b" + powerUp.getDrawByte());
         for (PowerUp p : powerUps)
             if (p.getDrawByte() == powerUp.getDrawByte())
                 return;
@@ -302,7 +294,6 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void removePowerUp(int power) {
-        System.out.println("created PowerUp: 0b" + power);
         PowerUp powerUp = null;
         for (PowerUp p : powerUps) {
             if ((power & p.getDrawByte()) != 0) {
@@ -453,24 +444,24 @@ public class Display extends JPanel implements KeyListener {
         return isServer;
     }
 
-    //public Graphics getGraphics(){
-    //	return g;
-    //}
+    public boolean isMultiplayer() {
+        return isMultiplayer;
+    }
 
     public void paint(Graphics graphics) {
-
-        graphics.drawImage(visualMap, 0, 0, this.getWidth(), this.getHeight(), null);
-
+        //graphics.drawImage(visualMap, 0, 0, this.getWidth(), this.getHeight(), null);
+        graphics.setColor(bgColor);
+        graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
         for (int i = 0; i < moveables.size(); i++) {
             graphics.drawImage(moveables.get(i).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
         }
-
         graphics.drawImage(foreground, 0, 0, this.getWidth(), this.getHeight(), null);
-        //System.out.println("PAINT");
+        graphics.setColor(Color.WHITE);
+        graphics.drawString("Updates per second: " + loop.getLastUps(), 0, this.getHeight());
     }
 
     public void gameOver(Player player, int code) {
-        System.out.println("THE GAME IS OVER");
+        System.out.println("THIS GAME IS OVER");
         isGameOver = true;
         stop();
         if (isMultiplayer) {
@@ -484,6 +475,8 @@ public class Display extends JPanel implements KeyListener {
                 e.printStackTrace();
             }
         }
+        frame.dispose();
+        GameCreator.createGame(gc, this::initGame);
     }
 }
 

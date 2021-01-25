@@ -65,6 +65,5 @@ public class Player extends Moveable {
         }
         System.out.println("You have " + getScore() + " Points!!!");
         getDisplay().gameOver(this, code);
-        System.exit(0);
     }
 }
