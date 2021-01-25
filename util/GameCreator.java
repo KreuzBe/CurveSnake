@@ -30,8 +30,14 @@ public class GameCreator {
 
 
     private void initGC(Consumer<GameCreator> gameStartAction) {
-        client = null;
-        server = null;
+        if (client != null) {
+            client.stop();
+            client = null;
+        }
+        if (server != null) {
+            server.stop();
+            server = null;
+        }
         //if (frame != null) frame.dispose();
         frame = new JFrame();
 
