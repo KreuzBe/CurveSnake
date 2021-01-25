@@ -92,6 +92,8 @@ public class Server {
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
+            if (display != null)
+                display.gameOver(null,0);
         }
     }
 

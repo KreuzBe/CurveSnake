@@ -52,7 +52,7 @@ public class Client {
                 System.err.println(e.getMessage());
                 System.out.println("Connection lost");
                 if (display != null)
-                display.gameOver(null,0);
+                    display.gameOver(null, 0);
                 //  System.exit(0);
                 isRunning = false;
                 break;
@@ -62,6 +62,8 @@ public class Client {
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
+            if (display != null)
+                display.gameOver(null, 0);
         }
     }
 
