@@ -38,7 +38,7 @@ public class GameCreator {
             server.stop();
             server = null;
         }
-        //if (frame != null) frame.dispose();
+        if (frame != null) frame.dispose();
         frame = new JFrame();
 
         JTabbedPane tabbedPane;

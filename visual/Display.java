@@ -399,8 +399,13 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void setMapByte(int x, int y, int value) {
-        map[x][y] |= value;
-        scaledMap[(x) / scale][(y) / scale] |= value;
+        try {
+            map[x][y] |= value;
+            scaledMap[(x) / scale][(y) / scale] |= value;
+        } catch (Exception e) {
+            e.printStackTrace();
+            gameOver(null, 0);
+        }
     }
 
     public void unsetMapByte(int x, int y, int value) {
