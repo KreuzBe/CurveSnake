@@ -97,6 +97,17 @@ public class GameCreator {
         taCreate = new JTextArea();
         taCreate.setEditable(false);
 
+        btnCreate = new JButton("Create server");
+        btnCreate.setBounds(0, 0, 200, 500);
+        btnCreate.addActionListener(a -> {
+            isMultiplayer = true;
+            isServer = true;
+            lastTab = 2;
+            server = new Server(Display.DEFAULT_PORT);
+            frame.dispose();
+            gameStartAction.accept(this);
+        });
+        tabCreate.add(btnCreate);
 
         btnToggle = new JCheckBox();
         btnToggle.setBounds(0, 0, 2000, 500);
@@ -123,18 +134,6 @@ public class GameCreator {
             taCreate.setText(string);
         });
         tabCreate.add(btnToggle);
-
-        btnCreate = new JButton("Create server");
-        btnCreate.setBounds(0, 0, 200, 500);
-        btnCreate.addActionListener(a -> {
-            isMultiplayer = true;
-            isServer = true;
-            lastTab = 2;
-            server = new Server(Display.DEFAULT_PORT);
-            frame.dispose();
-            gameStartAction.accept(this);
-        });
-        tabCreate.add(btnCreate);
         tabCreate.add(taCreate);
 
         tabbedPane.setSelectedIndex(lastTab);
