@@ -479,8 +479,9 @@ public class Display extends JPanel implements KeyListener {
                 e.printStackTrace();
             }
         }
-        frame.dispose();
+
         onGameOver();
+        frame.dispose();
     }
 
     public void onGameOver() {

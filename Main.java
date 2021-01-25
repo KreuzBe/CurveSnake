@@ -47,6 +47,7 @@ public class Main extends Display {
 
     @Override
     public void onGameOver() {
+        System.out.println("Main Game Over");
         new Main(getGameCreator());
     }
 
