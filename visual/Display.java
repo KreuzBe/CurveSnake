@@ -275,13 +275,12 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void stop() {
-        loop.stop();
         for (Moveable mo : moveables) {
             if (mo instanceof Enemy) {
                 ((Enemy) mo).stop();
             }
         }
-
+        loop.stop();
     }
 
     public void createPowerUp(PowerUp powerUp) {
