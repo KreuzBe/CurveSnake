@@ -66,9 +66,6 @@ public class Display extends JPanel implements KeyListener {
     private GameCreator gc;
 
     public Display(GameCreator gc) {
-        if (frame != null)
-            frame.dispose();
-        frame = null;
         GameCreator.createGame(gc, this::initGame);
     }
 
@@ -483,6 +480,7 @@ public class Display extends JPanel implements KeyListener {
             }
         }
         onGameOver();
+        frame.dispose();
     }
 
     public void onGameOver() {
