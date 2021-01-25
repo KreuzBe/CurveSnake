@@ -19,9 +19,10 @@ public class Main extends Display {
     @Override
     public void onGameReady() {
         if (isMultiplayer()) {
-            if (isServer())
+            if (isServer()) {
                 player = new Enemy(50, 50, 1, 1, 3, this, null);
-            else
+                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN, this, false));
+            } else
                 player = new Player(500, 500, -1, 1, 5, this, BYTE_PLAYER_MIN << 1);
         } else {
             player = new Player(500, 500, -1, 1, 5, this, BYTE_PLAYER_MIN);
