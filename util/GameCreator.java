@@ -19,6 +19,7 @@ public class GameCreator {
     private boolean isServer;
     private Client client;
     private Server server;
+    private int lastTab = 0;
 
     private String connectedIp = "";
 
@@ -40,6 +41,8 @@ public class GameCreator {
     }
 
     private void initGC(Consumer<GameCreator> gameStartAction) {
+        client = null;
+        server = null;
         if (frame != null) frame.dispose();
         frame = new JFrame();
 
@@ -86,6 +89,7 @@ public class GameCreator {
         btnConnect.addActionListener(a -> {
             isMultiplayer = true;
             isServer = false;
+            lastTab = 1;
             try {
                 client = new Client(tfConnect.getText(), Display.DEFAULT_PORT);
                 connectedIp = tfConnect.getText();
@@ -136,12 +140,15 @@ public class GameCreator {
         btnCreate.addActionListener(a -> {
             isMultiplayer = true;
             isServer = true;
+            lastTab = 2;
             server = new Server(Display.DEFAULT_PORT);
             frame.dispose();
             gameStartAction.accept(this);
         });
         tabCreate.add(btnCreate);
         tabCreate.add(taCreate);
+
+        tabbedPane.setSelectedIndex(lastTab);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds(0, 0, 320, 360);
