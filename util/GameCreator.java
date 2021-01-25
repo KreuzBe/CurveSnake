@@ -90,6 +90,7 @@ public class GameCreator {
                 connectedIp = tfConnect.getText();
             } catch (IOException e) {
                 e.printStackTrace();
+                System.out.println("GC!!!");
                 System.exit(0);
             }
             frame.dispose();

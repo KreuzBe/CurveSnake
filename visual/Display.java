@@ -470,10 +470,10 @@ public class Display extends JPanel implements KeyListener {
             try {
                 if (isServer) {
                     server.send(createGameInfo());
-                  //  server.stop();
+                    //  server.stop();
                 } else {
                     client.send(createGameInfo());
-                  //  client.stop();
+                    //  client.stop();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -481,7 +481,7 @@ public class Display extends JPanel implements KeyListener {
         }
 
         onGameOver();
-        frame.dispose();
+        //  frame.dispose();
     }
 
     public void onGameOver() {
