@@ -463,6 +463,7 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void gameOver(Moveable player, int code) {
+        frame.dispose();
         System.out.println("THIS GAME IS OVER");
         isGameOver = true;
         stop();
@@ -480,7 +481,6 @@ public class Display extends JPanel implements KeyListener {
             }
         }
         onGameOver();
-        frame.dispose();
     }
 
     public void onGameOver() {
