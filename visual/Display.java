@@ -124,7 +124,6 @@ public class Display extends JPanel implements KeyListener {
         if (isServer)
             try {
                 GameInfo gi = new GameInfo();
-                //System.out.println(gi);
                 server.send(gi);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -135,7 +134,6 @@ public class Display extends JPanel implements KeyListener {
 
 
     public void onGameReady() {
-
     }
 
     public ArrayList<PowerUp> getPowerUps() {
@@ -336,7 +334,7 @@ public class Display extends JPanel implements KeyListener {
     }
 
     private void handleInput(Object obj) {
-
+        System.out.println("Handle input");
         if (obj instanceof GameInfo) {
             GameInfo gi = (GameInfo) obj;
             if (gi.stop) {
