@@ -74,6 +74,7 @@ public class Display extends JPanel implements KeyListener {
         this.isMultiplayer = gc.isMultiplayer();
         if (isMultiplayer) {
             isServer = gc.isServer();
+            System.out.println(server + "(" + isServer + ") / " + client);
             if (isServer) {
                 this.server = gc.getServer();
                 server.setInputConsumer(this::handleInput);
@@ -167,7 +168,6 @@ public class Display extends JPanel implements KeyListener {
 
         moveables.removeAll(removedMoveables);
         removedMoveables.clear();
-
 
 
 // multiplayer
@@ -333,7 +333,6 @@ public class Display extends JPanel implements KeyListener {
     }
 
     private void handleInput(Object obj) {
-        System.out.println("Handle input");
         if (obj instanceof GameInfo) {
             GameInfo gi = (GameInfo) obj;
             if (gi.stop) {
