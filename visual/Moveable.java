@@ -159,7 +159,18 @@ public class Moveable {
     }
 
     public void onCrash(int code) {
-        System.out.println("CRASH!!!");
+        getDisplay().stop();
+        System.out.print(this + " was killed by ");
+        if ((code & Display.BYTE_PLAYER) != 0) {
+            System.out.println("player " + ((int) (Math.log(code & Display.BYTE_PLAYER) / Math.log(2)) - Display.BYTE_SHIFT_PLAYER + 1));
+        } else if ((code & Display.BYTE_NPC) != 0) {
+            System.out.println("NPC " + ((int) (Math.log(code & Display.BYTE_NPC) / Math.log(2)) - Display.BYTE_SHIFT_NPC + 1));
+        } else if ((code & Display.BYTE_WALL) != 0) {
+            System.out.println("a Wall");
+        } else {
+            System.out.println("something I dont know... what could that be? Are these... aliens?");
+        }
+        getDisplay().gameOver(this, code);
     }
 
     public void turn(float angle) {

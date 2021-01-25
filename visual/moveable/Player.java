@@ -51,19 +51,6 @@ public class Player extends Moveable {
 
     @Override
     public void onCrash(int code) {
-        getDisplay().stop();
-        System.out.println("You Lose!!!");
-        System.out.print("You were killed by ");
-        if ((code & Display.BYTE_PLAYER) != 0) {
-            System.out.println("player " + ((int) (Math.log(code & Display.BYTE_PLAYER) / Math.log(2)) - Display.BYTE_SHIFT_PLAYER + 1));
-        } else if ((code & Display.BYTE_NPC) != 0) {
-            System.out.println("NPC " + ((int) (Math.log(code & Display.BYTE_NPC) / Math.log(2)) - Display.BYTE_SHIFT_NPC + 1));
-        } else if ((code & Display.BYTE_WALL) != 0) {
-            System.out.println("a Wall");
-        } else {
-            System.out.println("something I dont know... what could that be? Are these... aliens?");
-        }
-        System.out.println("You have " + getScore() + " Points!!!");
-        getDisplay().gameOver(this, code);
+        super.onCrash(code);
     }
 }
