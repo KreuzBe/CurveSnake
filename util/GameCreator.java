@@ -93,6 +93,7 @@ public class GameCreator {
                 e.printStackTrace();
                 System.exit(0);
             }
+            frame.dispose();
             gameStartAction.accept(this);
         });
         tabConnect.add(btnConnect);
@@ -136,6 +137,7 @@ public class GameCreator {
             isMultiplayer = true;
             isServer = true;
             server = new Server(Display.DEFAULT_PORT);
+            frame.dispose();
             gameStartAction.accept(this);
         });
         tabCreate.add(btnCreate);
