@@ -275,12 +275,13 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void stop() {
+        loop.stop();
         for (Moveable mo : moveables) {
             if (mo instanceof Enemy) {
                 ((Enemy) mo).stop();
             }
         }
-        loop.stop();
+
     }
 
     public void createPowerUp(PowerUp powerUp) {
@@ -466,7 +467,7 @@ public class Display extends JPanel implements KeyListener {
         graphics.drawString("Updates per second: " + loop.getLastUps(), 0, this.getHeight());
     }
 
-    public void gameOver(Player player, int code) {
+    public void gameOver(Moveable player, int code) {
         System.out.println("THIS GAME IS OVER");
         isGameOver = true;
         stop();

@@ -43,7 +43,7 @@ public class GameCreator {
     private void initGC(Consumer<GameCreator> gameStartAction) {
         client = null;
         server = null;
-        if (frame != null) frame.dispose();
+        //if (frame != null) frame.dispose();
         frame = new JFrame();
 
         JTabbedPane tabbedPane;
