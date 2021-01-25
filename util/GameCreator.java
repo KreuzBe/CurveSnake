@@ -64,6 +64,7 @@ public class GameCreator {
         btnSingleplayer.setBounds(0, 0, 200, 500);
         btnSingleplayer.addActionListener((a) -> {
             isMultiplayer = false;
+            lastTab = 0;
             frame.dispose();
             gameStartAction.accept(this);
         });

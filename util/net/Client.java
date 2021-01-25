@@ -73,7 +73,8 @@ public class Client {
             out.flush();
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            stop();
+            if (display != null)
+                display.gameOver(null, 0);
             //     System.exit(0);
         }
 
