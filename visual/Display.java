@@ -462,6 +462,10 @@ public class Display extends JPanel implements KeyListener {
         graphics.drawString("Updates per second: " + loop.getLastUps(), 0, this.getHeight());
     }
 
+    public GameCreator getGameCreator() {
+        return gc;
+    }
+
     public void gameOver(Moveable player, int code) {
         System.out.println("THIS GAME IS OVER");
         isGameOver = true;
@@ -480,7 +484,11 @@ public class Display extends JPanel implements KeyListener {
             }
         }
         frame.dispose();
-        new Display(gc);
+        onGameOver();
+    }
+
+    public void onGameOver() {
+
     }
 }
 

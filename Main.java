@@ -1,3 +1,4 @@
+import util.GameCreator;
 import visual.Display;
 import visual.ImageLoader;
 import visual.Moveable;
@@ -10,8 +11,8 @@ public class Main extends Display {
     private Moveable player;
 
 
-    public Main() {
-        super(null);
+    public Main(GameCreator gc) {
+        super(gc);
         ImageLoader.init();
     }
 
@@ -44,8 +45,12 @@ public class Main extends Display {
         }
     }
 
+    @Override
+    public void onGameOver() {
+        new Main(getGameCreator());
+    }
 
     public static void main(String[] args) {
-        new Main();
+        new Main(null);
     }
 }
