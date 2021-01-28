@@ -204,9 +204,10 @@ public class Enemy extends Moveable {
                 for (Moveable mo : getDisplay().getMoveables()) {
                     if (mo != this) {
                         newTarget = mo;
-                        return;
+                        break;
                     }
                 }
+                target = newTarget;
                 return;
             } else {
                 setTarget(mainTarget);
@@ -217,11 +218,11 @@ public class Enemy extends Moveable {
         avoidDeath();
         int[][] map = getDisplay().getMap();
         try {
-            super.update(tick);
             if ((map[((int) (getX() + getVX() * getSpeed()))][(int) (getY() + getVY() * getSpeed())] & getEnemyBytes()) != 0) {
                 setVisible(false);
                 gap = 20;
             }
+            super.update(tick);
         } catch (Exception e) {
             die();
         }

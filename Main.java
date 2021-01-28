@@ -41,7 +41,7 @@ public class Main extends Display {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 1, this, false));
             } else if (Math.random() < 0.0005) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 2, this, false));
-            } else if (Math.random() < 0.005) {
+            } else if (Math.random() < 0.0005) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 3, this, false));
             }
         }
