@@ -43,7 +43,7 @@ public class Enemy extends Moveable {
     }
 
     private void pathFind() {
-        if (!isVisible()) {
+        if (gap > 50) {
             lookAt(target.getX(), target.getY(), 5);
             return;
         }

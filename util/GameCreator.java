@@ -38,7 +38,11 @@ public class GameCreator {
             server.stop();
             server = null;
         }
-        if (frame != null && frame.isActive()) frame.dispose();
+        if (frame != null) try {
+            frame.dispose();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
         frame = new JFrame();
 
         JTabbedPane tabbedPane;
@@ -65,9 +69,9 @@ public class GameCreator {
         btnSingleplayer = new JButton("Play against bot");
         btnSingleplayer.setBounds(0, 0, 200, 500);
         btnSingleplayer.addActionListener((a) -> {
+            frame.dispose();
             isMultiplayer = false;
             lastTab = 0;
-            frame.dispose();
             gameStartAction.accept(this);
         });
         tabSingleplayer.add(btnSingleplayer);
@@ -88,6 +92,7 @@ public class GameCreator {
             isMultiplayer = true;
             isServer = false;
             lastTab = 1;
+            frame.dispose();
             try {
                 client = new Client(tfConnect.getText(), Display.DEFAULT_PORT);
                 connectedIp = tfConnect.getText();
@@ -96,7 +101,6 @@ public class GameCreator {
                 System.out.println("GC!!!");
                 System.exit(0);
             }
-            frame.dispose();
             gameStartAction.accept(this);
         });
         tabConnect.add(btnConnect);
@@ -110,11 +114,11 @@ public class GameCreator {
         btnCreate = new JButton("Create server");
         btnCreate.setBounds(0, 0, 200, 500);
         btnCreate.addActionListener(a -> {
+            frame.dispose();
             isMultiplayer = true;
             isServer = true;
             lastTab = 2;
             server = new Server(Display.DEFAULT_PORT);
-            frame.dispose();
             gameStartAction.accept(this);
         });
         tabCreate.add(btnCreate);
