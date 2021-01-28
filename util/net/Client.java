@@ -68,16 +68,17 @@ public class Client {
     }
 
     public void send(Object o) throws IOException {
-        try {
-            out.writeObject(o);
-            out.flush();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            if (display != null)
-                display.gameOver(null, 0);
-            //     System.exit(0);
+        if (!socket.isClosed()) {
+            try {
+                out.writeObject(o);
+                out.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Connection lost");
+                stop();
+                isRunning = false;
+            }
         }
-
     }
 
     public void stop() {

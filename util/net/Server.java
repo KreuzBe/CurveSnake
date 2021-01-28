@@ -61,8 +61,11 @@ public class Server {
                 out.writeObject(o);
                 out.flush();
             } catch (Exception e) {
-                System.err.println(e.getMessage());
-                //System.exit(0);
+                e.printStackTrace();
+                System.out.println("Connection lost");
+                stop();
+
+                isRunning = false;
             }
 
         }
@@ -77,12 +80,11 @@ public class Server {
                     inputConsumer.accept(in.readObject());
                 }
             } catch (IOException | ClassNotFoundException e) {
-              //  System.err.println(e.getMessage());
                 e.printStackTrace();
                 System.out.println("Connection lost");
                 if (display != null)
                     display.gameOver(null, 0);
-                //  System.exit(0);
+
                 isRunning = false;
                 break;
             }
@@ -93,8 +95,11 @@ public class Server {
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Connection lost");
             if (display != null)
-                display.gameOver(null,0);
+                display.gameOver(null, 0);
+
+            isRunning = false;
         }
     }
 
