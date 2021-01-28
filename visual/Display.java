@@ -375,6 +375,7 @@ public class Display extends JPanel implements KeyListener {
                     moveable.setX(oc.x);
                     moveable.setY(oc.y);
                     moveable.setVX(oc.vx);
+                    moveable.setVY(oc.vy);
                     moveable.setSpeed(oc.speed);
                     moveable.setVisible(oc.isVisible);
                 }
