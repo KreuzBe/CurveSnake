@@ -171,7 +171,6 @@ public class Display extends JPanel implements KeyListener {
 
 // multiplayer
         if (isMultiplayer) {
-            System.out.println("Multi");
             try {
                 if (isServer && server != null)
                     server.send(createGameInfo());
@@ -333,6 +332,7 @@ public class Display extends JPanel implements KeyListener {
     }
 
     private void handleInput(Object obj) {
+        System.out.println("received: " + obj);
         if (obj instanceof GameInfo) {
             GameInfo gi = (GameInfo) obj;
             if (gi.stop) {

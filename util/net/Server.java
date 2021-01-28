@@ -74,11 +74,9 @@ public class Server {
     private void listen() { // TODO LISTEN AS LONG AS YOU CAN
         isRunning = true;
         while (clientSocket.isConnected()) {
-
             try {
                 if (inputConsumer != null) {
                     inputConsumer.accept(in.readObject());
-                    System.out.println(".");
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

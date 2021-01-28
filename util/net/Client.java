@@ -68,7 +68,6 @@ public class Client {
     }
 
     public void send(Object o) throws IOException {
-        System.out.println("SEND");
         if (!socket.isClosed()) {
             try {
                 out.writeObject(o);
