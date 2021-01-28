@@ -47,7 +47,7 @@ public class Display extends JPanel implements KeyListener {
     private boolean[] keys = new boolean[256];
     private boolean[] keysOld = new boolean[256];
 
-    private final int scale = 20;
+    private final int scale = 10;
     private final int border = 10;
     private int[][] map; // maps the lines
     private int[][] scaledMap;
@@ -451,8 +451,8 @@ public class Display extends JPanel implements KeyListener {
         return isMultiplayer;
     }
 
+    @Override
     public void paint(Graphics graphics) {
-        //graphics.drawImage(visualMap, 0, 0, this.getWidth(), this.getHeight(), null);
         graphics.setColor(bgColor);
         graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
         for (int i = 0; i < moveables.size(); i++) {

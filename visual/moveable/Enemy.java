@@ -127,10 +127,9 @@ public class Enemy extends Moveable {
             avoidNext.add(node);
             closedNodes++;
         }
-        int c = 0;
+
         Node faceNode = null; // The node on wich the path touches a bad node, most likely a curve
         while (node.prevNode != null) {
-            c++;
             avoidNext.remove(node);
             node = node.prevNode;
             if (!hasObstacle && node.hasBadNeighbours) {
@@ -138,6 +137,7 @@ public class Enemy extends Moveable {
                 faceNode = node;
             }
         }
+
 
         if (!hasObstacle) {
             lookAt(target.getX(), target.getY(), 5);
@@ -204,12 +204,9 @@ public class Enemy extends Moveable {
             }
         }
 
-        try {
-            //pathFind(); <- now done in extra thread for the sake of performance
-            avoidDeath();
-        } catch (Exception e) {
-            System.out.println("ERR WHILE CALCULATING SHORTEST PATH: " + e.getMessage());
-        }
+
+        avoidDeath();
+
 
         // gaps:
         if (!isVisible()) {

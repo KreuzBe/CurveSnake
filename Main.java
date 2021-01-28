@@ -19,12 +19,12 @@ public class Main extends Display {
         Moveable player;
         if (isMultiplayer()) {
             if (isServer()) {
-                player = new Enemy(50, 50, 1, 1, 3, this, null);
+                player = new Enemy(50, 50, 1, 1, 4, this, null);
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN, this, false));
             } else
-                player = new Player(500, 500, -1, 1, 3, this, BYTE_PLAYER_MIN << 1);
+                player = new Player(500, 500, -1, 1, 4, this, BYTE_PLAYER_MIN << 1);
         } else {
-            player = new Player(500, 500, -1, 1, 3, this, BYTE_PLAYER_MIN);
+            player = new Player(500, 500, -1, 1, 4, this, BYTE_PLAYER_MIN);
             addMoveable(new Enemy(50, 50, 1, 1, 3, this, player));
         }
         addMoveable(player);
