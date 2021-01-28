@@ -220,7 +220,7 @@ public class Enemy extends Moveable {
         try {
             if ((map[((int) (getX() + getVX() * getSpeed()))][(int) (getY() + getVY() * getSpeed())] & getEnemyBytes()) != 0) {
                 setVisible(false);
-                gap = 20;
+                gap = 30;
             }
             super.update(tick);
         } catch (Exception e) {
