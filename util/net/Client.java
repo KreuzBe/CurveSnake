@@ -71,6 +71,7 @@ public class Client {
         if (!socket.isClosed()) {
             try {
                 out.writeObject(o);
+                System.out.println(o.toString());
                 out.flush();
             } catch (Exception e) {
                 e.printStackTrace();

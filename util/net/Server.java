@@ -78,6 +78,7 @@ public class Server {
             try {
                 if (inputConsumer != null) {
                     inputConsumer.accept(in.readObject());
+                    System.out.println(".");
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
