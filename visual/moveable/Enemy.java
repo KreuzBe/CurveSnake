@@ -224,6 +224,7 @@ public class Enemy extends Moveable {
             }
             super.update(tick);
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             die();
         }
 

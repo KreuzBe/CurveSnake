@@ -100,7 +100,6 @@ public class Moveable {
         y += vy * speed;
         //}
 
-        System.out.println(this + " " + gap);
         // gaps:
         if (!isVisible()) {
             if (gap == 0) {
