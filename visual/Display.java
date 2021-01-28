@@ -47,7 +47,7 @@ public class Display extends JPanel implements KeyListener {
     private boolean[] keys = new boolean[256];
     private boolean[] keysOld = new boolean[256];
 
-    private final int scale = 10;
+    private final int scale = 20;
     private final int border = 10;
     private int[][] map; // maps the lines
     private int[][] scaledMap;
