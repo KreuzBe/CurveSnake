@@ -171,6 +171,7 @@ public class Display extends JPanel implements KeyListener {
 
 // multiplayer
         if (isMultiplayer) {
+            System.out.println("Multi");
             try {
                 if (isServer && server != null)
                     server.send(createGameInfo());
