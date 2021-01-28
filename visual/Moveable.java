@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 public class Moveable {
 
+    private int gap = 0;
+
     private BufferedImage trace;
     private Graphics2D traceGraphics;
     private Color traceColor = Color.GREEN;
@@ -18,6 +20,7 @@ public class Moveable {
     private boolean isVisible = true;
     private boolean remoteControlled = false;
     private float lastX, lastY;
+
 
     private Display display;
 
@@ -44,6 +47,7 @@ public class Moveable {
 
         this.display = display;
         clear();
+        setInvisibleTicks(50);
         simplifyVector();
     }
 
@@ -95,6 +99,20 @@ public class Moveable {
         x += vx * speed;
         y += vy * speed;
         //}
+
+        System.out.println(this + " " + gap);
+        // gaps:
+        if (!isVisible()) {
+            if (gap == 0) {
+                setVisible(true);
+            } else {
+                gap--;
+            }
+        } else if (Math.random() < 0.01) {
+            setVisible(false);
+            gap = 15;
+        }
+
 
         if (life > 0)
             life--;
@@ -306,6 +324,11 @@ public class Moveable {
             return;
         vx /= l;
         vy /= l;
+    }
+
+    protected void setInvisibleTicks(int gap) {
+        setVisible(false);
+        this.gap += gap;
     }
 }
 

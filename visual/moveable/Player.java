@@ -28,17 +28,6 @@ public class Player extends Moveable {
             turn(-5);
         if (getDisplay().isKey(KeyEvent.VK_RIGHT))
             turn(5);
-
-        if (!isVisible()) {
-            if (gap == 0) {
-                setVisible(true);
-            } else {
-                gap--;
-            }
-        } else if (Math.random() < 0.01) {
-            setVisible(false);
-            gap = 15;
-        }
     }
 
     public void addToScore(int value) {

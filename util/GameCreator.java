@@ -56,6 +56,8 @@ public class GameCreator {
 
 
         tabbedPane = new JTabbedPane();
+        tabbedPane.setFocusable(false);
+
 
         tabSingleplayer = new JPanel();
         tabbedPane.addTab("Singleplayer", tabSingleplayer);

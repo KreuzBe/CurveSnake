@@ -11,11 +11,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Display extends JPanel implements KeyListener {
+public class Display extends JPanel implements KeyListener, WindowListener {
 
     public static final int BYTE_WALL = 0b1;
     public static final int BYTE_POWERUP = 0b111110;
@@ -95,6 +97,7 @@ public class Display extends JPanel implements KeyListener {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //  frame.setResizable(false);
+        frame.addWindowListener(this);
         this.addKeyListener(this);
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         frame.add(this);
@@ -190,7 +193,12 @@ public class Display extends JPanel implements KeyListener {
             }
         }
         for (PowerUp p : powerUps) {
-            fg.drawImage(ImageLoader.images[p.getImageNumber()][(tick / 10) % 5], (int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius(), null);
+            try {
+                fg.drawImage(ImageLoader.images[p.getImageNumber()][(tick / 10) % 5], (int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius(), null);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                fg.setColor(Color.ORANGE);
+                fg.fillRect((int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius());
+            }
         }
 
         repaint();
@@ -245,17 +253,19 @@ public class Display extends JPanel implements KeyListener {
         }
 
         scaledMap = new int[WIDTH / scale][HEIGHT / scale];
+        recreateWalls();
 
+    }
+
+    public void recreateWalls() {
         for (int x = 0; x < WIDTH; x++) {
             for (int i = 0; i <= border; i++) {
-                //map[x][i] = BYTE_WALL; // TODO WALL
                 setMapByte(x, i, BYTE_WALL);
                 setMapByte(x, HEIGHT - 1 - i, BYTE_WALL);
             }
         }
         for (int y = 0; y < HEIGHT; y++) {
             for (int i = 0; i <= border; i++) {
-                // map[i][y] = BYTE_WALL; // TODO WALL
                 setMapByte(i, y, BYTE_WALL);
                 setMapByte(WIDTH - 1 - i, y, BYTE_WALL);
             }
@@ -491,6 +501,41 @@ public class Display extends JPanel implements KeyListener {
     }
 
     public void onGameOver() {
+
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        gameOver(null, 0);
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
 
     }
 }

@@ -43,6 +43,11 @@ public class Enemy extends Moveable {
     }
 
     private void pathFind() {
+        if (!isVisible()) {
+            lookAt(target.getX(), target.getY(), 5);
+            return;
+        }
+
         int closedNodes = 0;
         ArrayList<Node> openNodes = new ArrayList<Node>();
         int[][] map = getDisplay().getScaledMap();
@@ -147,6 +152,10 @@ public class Enemy extends Moveable {
     }
 
     private void avoidDeath() {
+        if (!isVisible()) {
+            lookAt(target.getX(), target.getY(), 5);
+            return;
+        }
         removeEnemyByte(getDrawByte()); // TODO find a good way to ignore enemies drawByte it just did, but not the ones it did longer ago. (are two bits per Enemy good?)
 
         int[][] map = getDisplay().getMap();
@@ -206,30 +215,17 @@ public class Enemy extends Moveable {
 
 
         avoidDeath();
-
-
-        // gaps:
-        if (!isVisible()) {
-            if (gap == 0) {
-                setVisible(true);
-            } else {
-                gap--;
-            }
-        } else if (Math.random() < 0.01) {
-            setVisible(false);
-            gap = 15;
-        }
-
         int[][] map = getDisplay().getMap();
         try {
+            super.update(tick);
             if ((map[((int) (getX() + getVX() * getSpeed()))][(int) (getY() + getVY() * getSpeed())] & getEnemyBytes()) != 0) {
                 setVisible(false);
-                gap = 15;
+                gap = 20;
             }
-            super.update(tick);
         } catch (Exception e) {
             die();
         }
+
     }
 
     @Override

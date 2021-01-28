@@ -69,5 +69,9 @@ public class PowerUp extends Moveable {
 
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);
         }
+        if ((code & (Display.BYTE_POWERUP_MIN << 3)) != 0) { // clear walls
+            moveable.setInvisibleTicks(100);
+            moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);
+        }
     }
 }
