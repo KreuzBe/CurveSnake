@@ -43,7 +43,7 @@ public class Enemy extends Moveable {
     }
 
     private void pathFind() {
-        if (!isVisible()) {
+        if (gap > 50) {
             lookAt(target.getX(), target.getY(), 5);
             return;
         }
@@ -153,7 +153,6 @@ public class Enemy extends Moveable {
 
     private void avoidDeath() {
         if (!isVisible()) {
-            lookAt(target.getX(), target.getY(), 5);
             return;
         }
         removeEnemyByte(getDrawByte()); // TODO find a good way to ignore enemies drawByte it just did, but not the ones it did longer ago. (are two bits per Enemy good?)
