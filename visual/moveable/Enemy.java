@@ -235,7 +235,7 @@ public class Enemy extends Moveable {
             if ((map[((int) (getX() + getVX() * getSpeed()))][(int) (getY() + getVY() * getSpeed())] & getEnemyBytes()) != 0) {
                 setGap(30);
                 if (getGap() > getMaxGap()) {
-                   // setVisible(false);
+                    setVisible(false);
                     setMaxGap(getGap());
                 }
             }
