@@ -528,6 +528,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     public void gameOver(Moveable player, int code) {
         if (isGameOver) return;
         isGameOver = true;
+        onGameOver();
         long gt = System.currentTimeMillis() + 1000;
         int dsTime;
         do {
@@ -542,7 +543,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 e.printStackTrace();
             }
         } while (dsTime > 0);
-        onGameOver();
+
         frame.dispose();
         System.out.println("THIS GAME IS OVER");
         stop();
