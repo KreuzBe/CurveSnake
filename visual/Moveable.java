@@ -152,13 +152,13 @@ public class Moveable extends VisualObject {
             return;
         }
         getGraphics().setColor(traceColor);
-        if (isRemoteControlled()) {
-            getGraphics().setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
-            getGraphics().drawLine((int) getX(), (int) getY(), (int) lastX, (int) lastY);
-            lastX = getX();
-            lastY = getY();
-            return;
-        }
+//        if (isRemoteControlled()) {
+//            getGraphics().setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
+//            getGraphics().drawLine((int) getX(), (int) getY(), (int) lastX, (int) lastY);
+//            lastX = getX();
+//            lastY = getY();
+//            return;
+//        }
         for (int i = 0; i < getSpeed(); i++) {
             getGraphics().fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
         }
@@ -314,6 +314,9 @@ public class Moveable extends VisualObject {
         this.remoteControlled = remoteControlled;
     }
 
+    public void clearEnemyByte() {
+        enemyBytes = 0b0;
+    }
 
 }
 

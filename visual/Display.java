@@ -359,7 +359,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         for (Moveable mo : moveables) {
             if (!mo.isRemoteControlled()) {
                 mo.simplifyVector();
-                gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.isVisible());
+                gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.getEnemyBytes(), mo.isVisible());
             }
         }
 
@@ -411,6 +411,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                     moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
                     moveable.setVisible(oc.isVisible);
                     moveable.setRemoteControlled(true);
+                    moveable.addEnemyByte(oc.enemyByte);
                     moveable.setTraceColor(Color.RED);
                     addMoveable(moveable);
                 } else {
@@ -419,6 +420,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                     moveable.setVX(oc.vx);
                     moveable.setVY(oc.vy);
                     moveable.setSpeed(oc.speed);
+                    moveable.clearEnemyByte();
+                    moveable.addEnemyByte(oc.enemyByte);
                     moveable.setVisible(oc.isVisible);
                 }
             }
