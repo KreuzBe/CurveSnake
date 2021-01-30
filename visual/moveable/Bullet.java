@@ -10,7 +10,7 @@ public class Bullet extends Moveable {
 
     public Bullet(float x, float y, float vx, float vy, float speed, Display display) {
         super(x, y, vx, vy, speed, display, 0b0);
-        setLife(1000);
+        setLife(100);
         setTraceColor(new Color(0, 0, 0, 0));
         setVisible(true);
     }
@@ -48,7 +48,7 @@ public class Bullet extends Moveable {
                 }
             }
             getDisplay().addAnimation(new Explosion(getDisplay(), getX(), getY(), 0, 10, 2 * radius));
-            // decay();
+            decay();
         }
 
 

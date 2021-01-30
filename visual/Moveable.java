@@ -1,6 +1,7 @@
 package visual;
 
 import util.ImageLoader;
+import visual.animation.LineCleared;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -175,6 +176,8 @@ public class Moveable extends VisualObject {
         } else {
             System.out.println("something I dont know... what could that be? Are these... aliens?");
         }
+        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 50, 100, getTraceColor()));
+        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 50, 100, getTraceColor()));
         getDisplay().gameOver(this, code);
     }
 

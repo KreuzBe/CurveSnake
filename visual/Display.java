@@ -39,8 +39,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     public static final int DEFAULT_PORT = 4444;
 
     private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
-    public static final int WIDTH = 3200;
-    public static final int HEIGHT = 1800;
+    public static final int WIDTH = 1600;
+    public static final int HEIGHT = 900;
 
     protected static final Color bgColor = new Color(0x220033);
 
@@ -317,6 +317,10 @@ public class Display extends JPanel implements KeyListener, WindowListener {
             if (p.getDrawByte() == powerUp.getDrawByte())
                 return;
 
+        if ((map[(int) powerUp.getX()][(int) powerUp.getY()] & (BYTE_PLAYER | BYTE_NPC)) != 0)
+            return;
+
+
         powerUps.add(powerUp);
         for (int rx = -powerUp.getRadius(); rx < powerUp.getRadius(); rx++) {
             for (int ry = -powerUp.getRadius(); ry < powerUp.getRadius(); ry++) {
@@ -523,10 +527,24 @@ public class Display extends JPanel implements KeyListener, WindowListener {
 
     public void gameOver(Moveable player, int code) {
         if (isGameOver) return;
+        isGameOver = true;
+        long gt = System.currentTimeMillis() + 1000;
+        int dsTime;
+        do {
+            paintMe(1);
+            dsTime = (int) (gt - System.currentTimeMillis());
+            fg.setColor(Color.ORANGE);
+            fg.drawString("Meow in: " + (dsTime / 1000), 0, 30);
+            repaint();
+            try {
+                Thread.sleep((long) (1E3 / 60));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (dsTime > 0);
         onGameOver();
         frame.dispose();
         System.out.println("THIS GAME IS OVER");
-        isGameOver = true;
         stop();
         if (isMultiplayer) {
             try {

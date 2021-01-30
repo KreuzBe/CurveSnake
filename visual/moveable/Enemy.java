@@ -60,18 +60,18 @@ public class Enemy extends Moveable {
         int x, y;
         if (target instanceof Moveable) {
             Moveable mTarget = ((Moveable) target);
-			int dst = 2;
-			do {
-				x = (int) (target.getX() + dst * scale * mTarget.getVX()) / scale;
-				y = (int) (target.getY() + dst * scale * mTarget.getVY()) / scale;
-				dst++;
-			} while( x > 0 && y > 0 && x < Display.WIDTH && y < Display.HEIGHT && (map[x][y] & getEnemyBytes()) == 0 && dst <= 50 );
+            int dst = 2;
+            do {
+                x = (int) (target.getX() + dst * scale * mTarget.getVX()) / scale;
+                y = (int) (target.getY() + dst * scale * mTarget.getVY()) / scale;
+                dst++;
+            } while (x > 0 && y > 0 && x < Display.WIDTH && y < Display.HEIGHT && (map[x][y] & getEnemyBytes()) == 0 && dst <= 50);
         } else {
             x = (int) target.getX() / scale;
             y = (int) target.getY() / scale;
         }
 
-		
+
         Node node = new Node(x, y, 0, Math.sqrt(((x - tx) * (x - tx) + (y - ty) * (y - ty))), null);
         openNodes.add(node);
 
@@ -80,7 +80,7 @@ public class Enemy extends Moveable {
             n.way = 0; // I dont care about the way, could be Integer.MAX_VALUE
             n.distance = Math.sqrt(((n.x - tx) * (n.x - tx) + (n.y - ty) * (n.y - ty)));
             n.prevNode = null;
-         //      openNodes.add(n);
+            //      openNodes.add(n);
         }
         avoidNext.clear();
 
@@ -254,6 +254,14 @@ public class Enemy extends Moveable {
     }
 
     @Override
+    public void paint(int tick) {
+        super.paint(tick);
+        Graphics g = getDisplay().fg;
+        g.setColor(Color.WHITE);
+        g.drawString("> " + pathFindLoop.getLastUps(), (int) getX() - 10, (int) getY() - 30);
+    }
+
+    @Override
     public void onCrash(int code) {
         if ((code & Display.BYTE_WALL) == 0) {
             die();
@@ -278,6 +286,7 @@ public class Enemy extends Moveable {
     public void start() {
         pathFindLoop.start();
     }
+
 
     private static class Node {
         private final int x;

@@ -29,7 +29,7 @@ public class Player extends Moveable {
         if (getDisplay().isKey(KeyEvent.VK_RIGHT))
             turn(5);
         if (getDisplay().isKeyPressed(KeyEvent.VK_SPACE))
-            getDisplay().addMoveable(new Bullet(getX(), getY(), getVX(), getVY(), 2 * getSpeed(), getDisplay()));
+            getDisplay().addMoveable(new Bullet(getX() + getSpeed() * getVX(), getY() + getSpeed() * getVY(), getVX(), getVY(), 2 * getSpeed(), getDisplay()));
 
 
         super.update(tick);
