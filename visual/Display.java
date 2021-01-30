@@ -426,6 +426,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 }
             }
         } else {
+            System.out.println("THAT IS NO GAME INFO");
             gameOver(null, 0);
         }
     }

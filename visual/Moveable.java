@@ -166,7 +166,7 @@ public class Moveable extends VisualObject {
 
 
     public void onCrash(int code) {
-//        if (isRemoteControlled()) return;
+        if (isRemoteControlled()) return;
         System.out.print(this + " was killed by ");
         if ((code & Display.BYTE_PLAYER) != 0) {
             System.out.println("player " + ((int) (Math.log(code & Display.BYTE_PLAYER) / Math.log(2)) - Display.BYTE_SHIFT_PLAYER + 1));
