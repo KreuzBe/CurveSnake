@@ -3,33 +3,35 @@ package visual.moveable;
 import util.Loop;
 import visual.Moveable;
 import visual.Display;
+import visual.PowerUp;
+import visual.VisualObject;
+import visual.animation.LineCleared;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Enemy extends Moveable {
 
-    private Moveable target;
-    private Moveable mainTarget;
-    private int gap = 0;
+    private VisualObject target;
+    private final Moveable mainTarget;
     private final int scale;
-    private ArrayList<Node> avoidNext = new ArrayList<Node>();
-    private Loop pathFindLoop;
+    private final ArrayList<Node> avoidNext = new ArrayList<Node>();
+    private final Loop pathFindLoop;
+    private int cEnemy = 0;
 
-    public Enemy(int x, int y, int vx, int vy, int speed, Display display, Moveable target) {
-        super(x, y, vx, vy, speed, display, Display.BYTE_NPC_MIN);
+    public Enemy(float x, float y, float vx, float vy, float speed, Display display, Moveable target, int cEnemy) {
+        super(x, y, vx, vy, speed, display, Display.BYTE_NPC_MIN << cEnemy);
         this.target = this.mainTarget = target;
-        setDrawByte(Display.BYTE_NPC_MIN);
+        this.cEnemy = cEnemy;
         addEnemyByte(Display.BYTE_PLAYER); // You like nobody
         addEnemyByte(Display.BYTE_NPC);
         addEnemyByte(Display.BYTE_WALL);
         setTraceColor(Color.RED);
         scale = display.getScale();
         pathFindLoop = new Loop(60, this::loopAction);
-        pathFindLoop.start();
     }
 
-    public void setTarget(Moveable mo) {
+    public void setTarget(VisualObject mo) {
         target = mo;
     }
 
@@ -43,11 +45,10 @@ public class Enemy extends Moveable {
     }
 
     private void pathFind() {
-        if (gap > 50) {
+        if (getGap() > 50) {
             lookAt(target.getX(), target.getY(), 5);
             return;
         }
-
         int closedNodes = 0;
         ArrayList<Node> openNodes = new ArrayList<Node>();
         int[][] map = getDisplay().getScaledMap();
@@ -55,9 +56,16 @@ public class Enemy extends Moveable {
         Node[][] surroundingNodes;
         int tx = (int) (getX() + (getSpeed() + scale) * getVX()) / scale; // caluculating path from target to enemy because it is then easier to track the next point to go
         int ty = (int) (getY() + (getSpeed() + scale) * getVY()) / scale;
-        int x = (int) (target.getX() + scale * target.getVX()) / scale;
-        int y = (int) (target.getY() + scale * target.getVY()) / scale;
 
+        int x, y;
+        if (target instanceof Moveable) {
+            Moveable mTarget = ((Moveable) target);
+            x = (int) (target.getX() + scale * mTarget.getVX()) / scale;
+            y = (int) (target.getY() + scale * mTarget.getVY()) / scale;
+        } else {
+            x = (int) target.getX() / scale;
+            y = (int) target.getY() / scale;
+        }
         Node node = new Node(x, y, 0, Math.sqrt(((x - tx) * (x - tx) + (y - ty) * (y - ty))), null);
         openNodes.add(node);
 
@@ -158,7 +166,7 @@ public class Enemy extends Moveable {
         removeEnemyByte(getDrawByte()); // TODO find a good way to ignore enemies drawByte it just did, but not the ones it did longer ago. (are two bits per Enemy good?)
 
         int[][] map = getDisplay().getMap();
-        int radius = (int) (6 * getSpeed());
+        int radius = (int) (4 * getSpeed());
 
         int cW = 0;
         double dx = 0;
@@ -192,11 +200,18 @@ public class Enemy extends Moveable {
 
     @Override
     public void update(int tick) {
-        if (target != null)
-            target.simplifyVector();
 
         if (getDisplay().getPowerUps().size() > 0) {
-            setTarget(getDisplay().getPowerUps().get(0));
+            float dst = Float.MAX_VALUE;
+            PowerUp p = getDisplay().getPowerUps().get(0);
+            for (PowerUp pu : getDisplay().getPowerUps()) {
+                float ndst = Math.abs(getX() - pu.getX()) + Math.abs(getY() - pu.getY());
+                if (ndst < dst) {
+                    p = pu;
+                    dst = ndst;
+                }
+            }
+            setTarget(p);
         } else {
             if (mainTarget == null) {
                 Moveable newTarget = null;
@@ -206,7 +221,7 @@ public class Enemy extends Moveable {
                         break;
                     }
                 }
-                target = newTarget;
+                setTarget(newTarget);
                 return;
             } else {
                 setTarget(mainTarget);
@@ -218,8 +233,11 @@ public class Enemy extends Moveable {
         int[][] map = getDisplay().getMap();
         try {
             if ((map[((int) (getX() + getVX() * getSpeed()))][(int) (getY() + getVY() * getSpeed())] & getEnemyBytes()) != 0) {
-                setVisible(false);
-                gap = 30;
+                setGap(30);
+                if (getGap() > getMaxGap()) {
+                   // setVisible(false);
+                    setMaxGap(getGap());
+                }
             }
             super.update(tick);
         } catch (Exception e) {
@@ -238,14 +256,21 @@ public class Enemy extends Moveable {
 
     private void die() {
         stop();
+        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 100, 100, getTraceColor()));
+
         getDisplay().removeMoveable(this);
-        Enemy newMe = new Enemy((int) (Display.WIDTH * Math.random()), (int) (Display.HEIGHT * Math.random()), 1, 1, (int) getSpeed(), getDisplay(), mainTarget);
+        Enemy newMe = new Enemy((int) (Display.WIDTH * Math.random()), (int) (Display.HEIGHT * Math.random()), 1, 1, (int) getSpeed(), getDisplay(), mainTarget, cEnemy);
         newMe.lookAt(target.getX(), target.getY(), 360);
         getDisplay().addMoveable(newMe);
+
     }
 
     public void stop() {
         pathFindLoop.stop();
+    }
+
+    public void start() {
+        pathFindLoop.start();
     }
 
     private static class Node {

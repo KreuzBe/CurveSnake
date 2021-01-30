@@ -5,6 +5,7 @@ import util.Loop;
 import util.net.Client;
 import util.net.GameInfo;
 import util.net.Server;
+import visual.moveable.Animation;
 import visual.moveable.Enemy;
 
 import javax.swing.*;
@@ -30,7 +31,11 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     public static final int BYTE_PLAYER = 0b1111100000000000;
     public static final int BYTE_SHIFT_PLAYER = 11;
     public static final int BYTE_PLAYER_MIN = 0b1 << BYTE_SHIFT_PLAYER;
-    public static final int BYTE_PLAYER_MAX = 0b1 << 15;
+    public static final int BYTE_PLAYER_MAX = 0b1 << 13;
+    public static final int BYTE_ANIMATION = 0b00000000000000;
+    public static final int BYTE_SHIFT_ANIMATION = 14;
+    public static final int BYTE_ANIMATION_MIN = 0b1 << BYTE_SHIFT_ANIMATION;
+    public static final int BYTE_ANIMATION_MAX = 0b1 << 19;
     public static final int DEFAULT_PORT = 4444;
 
     private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
@@ -45,6 +50,9 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     private ArrayList<Moveable> addedMoveables;
     private ArrayList<Moveable> removedMoveables;
     private ArrayList<PowerUp> powerUps;
+    private ArrayList<PowerUp> removedPowerUps;
+    private ArrayList<Animation> animations;
+    private ArrayList<Animation> removedAnimations;
 
     private boolean[] keys = new boolean[256];
     private boolean[] keysOld = new boolean[256];
@@ -54,9 +62,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     private int[][] map; // maps the lines
     private int[][] scaledMap;
 
-    private BufferedImage visualMap;
     private BufferedImage foreground;
-    public Graphics g;
     public Graphics fg;
 
     private boolean isMultiplayer;
@@ -89,23 +95,23 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         addedMoveables = new ArrayList<Moveable>();
         removedMoveables = new ArrayList<Moveable>();
         powerUps = new ArrayList<PowerUp>();
+        removedPowerUps = new ArrayList<PowerUp>();
+        animations = new ArrayList<Animation>();
+        removedAnimations = new ArrayList<Animation>();
+
         loop = new Loop(60, this::update);
 
         frame = new JFrame();
-        //frame.setUndecorated(true);
         frame.setBounds(0, 0, 2 * WIDTH, 2 * HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //  frame.setResizable(false);
         frame.addWindowListener(this);
         this.addKeyListener(this);
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         frame.add(this);
-        frame.setAlwaysOnTop(true);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
-        frame.setUndecorated(true);
-        frame.setAlwaysOnTop(true);
+        frame.setUndecorated(false);
         frame.setVisible(true);
         frame.setAlwaysOnTop(true);
 
@@ -118,9 +124,6 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         scaledMap = new int[WIDTH / scale][HEIGHT / scale];
 
         clear();
-
-        visualMap = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-        g = visualMap.createGraphics();
 
 
         if (isServer)
@@ -146,16 +149,9 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         moveables.addAll(addedMoveables);
         addedMoveables.clear();
 
-        g.setColor(bgColor);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
-
-        foreground = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        fg = foreground.createGraphics();
 
         frame.setTitle(loop.getLastUps() + " " + moveables.size());
         onUpdate(tick);
-
-        System.arraycopy(keys, 0, keysOld, 0, keys.length);
 
 
         for (Moveable mo : moveables) {
@@ -184,7 +180,18 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 e.printStackTrace();
             }
         }
+
+
 //paint
+        paintMe(tick);
+
+        System.arraycopy(keys, 0, keysOld, 0, keys.length);
+
+    }
+
+    private void paintMe(int tick) {
+        foreground = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        fg = foreground.createGraphics();
         for (Moveable mo : moveables) {
             try {
                 mo.paint(tick);
@@ -192,38 +199,60 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 e.printStackTrace();
             }
         }
+
+        for (Animation a : animations) {
+            try {
+                a.update(tick);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (a.shouldDecay())
+                removeAnimation(a);
+        }
+        animations.removeAll(removedAnimations);
+        removedAnimations.clear();
+
         for (PowerUp p : powerUps) {
             try {
-                fg.drawImage(ImageLoader.images[p.getImageNumber()][(tick / 10) % 5], (int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius(), null);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                fg.setColor(Color.ORANGE);
-                fg.fillRect((int) (p.getX() - p.getRadius()), (int) (p.getY() - p.getRadius() - (tick / 10) % 5), 2 * p.getRadius(), 2 * p.getRadius());
+                p.update(tick);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            if (p.shouldDecay())
+                removePowerUp(p.getDrawByte());
         }
+        powerUps.removeAll(removedPowerUps);
+        removedPowerUps.clear();
+
 
         repaint();
     }
 
 
     public void addMoveable(Moveable mo) {
-        boolean onRemove = false;
-        for (Moveable m : removedMoveables) {
-            if (mo.getDrawByte() == m.getDrawByte()) {
-                onRemove = true;
-                break;
+        if (mo.getDrawByte() != 0b0) {
+            boolean onRemove = false;
+            for (Moveable m : removedMoveables) {
+                if (mo.getDrawByte() == m.getDrawByte()) {
+                    onRemove = true;
+                    break;
+                }
+            }
+            if (!onRemove) {
+                for (Moveable m : addedMoveables) {
+                    if (mo.getDrawByte() == m.getDrawByte())
+                        return;
+                }
+                for (Moveable m : moveables) {
+                    if (mo.getDrawByte() == m.getDrawByte())
+                        return;
+                }
             }
         }
-        if (!onRemove) {
-            for (Moveable m : addedMoveables) {
-                if (mo.getDrawByte() == m.getDrawByte())
-                    return;
-            }
-            for (Moveable m : moveables) {
-                if (mo.getDrawByte() == m.getDrawByte())
-                    return;
-            }
-        }
+        mo.simplifyVector();
         addedMoveables.add(mo);
+        if (mo instanceof Enemy)
+            ((Enemy) mo).start();
     }
 
     public void removeMoveable(Moveable mo) {
@@ -239,8 +268,6 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     }
 
     public void clear() {
-        visualMap = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-        g = visualMap.createGraphics();
 
         for (Moveable mo : moveables) {
             mo.clear();
@@ -303,6 +330,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
 
     public void removePowerUp(int power) {
         PowerUp powerUp = null;
+
         for (PowerUp p : powerUps) {
             if ((power & p.getDrawByte()) != 0) {
                 powerUp = p;
@@ -312,7 +340,6 @@ public class Display extends JPanel implements KeyListener, WindowListener {
 
         if (powerUp == null)
             return;
-        //  System.out.println("Remove PowerUp " + Integer.toBinaryString(power));
         for (int rx = -powerUp.getRadius() - 3; rx < powerUp.getRadius() + 3; rx++) {
             for (int ry = -powerUp.getRadius() - 3; ry < powerUp.getRadius() + 3; ry++) {
                 if (rx * rx + ry + ry <= powerUp.getRadius() * powerUp.getRadius() + 4) {
@@ -320,7 +347,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 }
             }
         }
-        powerUps.remove(powerUp);
+        removedPowerUps.add(powerUp);
     }
 
     public GameInfo createGameInfo() {
@@ -416,7 +443,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
             scaledMap[(x) / scale][(y) / scale] |= value;
         } catch (Exception e) {
             e.printStackTrace();
-            gameOver(null, 0);
+            // gameOver(null, 0);
         }
     }
 
@@ -463,12 +490,27 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         return isMultiplayer;
     }
 
+    public void addAnimation(Animation animation) {
+        animations.add(animation);
+    }
+
+    public void removeAnimation(Animation animation) {
+        removedAnimations.add(animation);
+        animation.kill();
+    }
+
     @Override
     public void paint(Graphics graphics) {
         graphics.setColor(bgColor);
         graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
-        for (int i = 0; i < moveables.size(); i++) {
+        for (int i = 0; i < moveables.size(); i++) { // DO NOT USE FOREACH HERE!!! MULTITHREADING CAUSES LIST MODIFICATION !!!
             graphics.drawImage(moveables.get(i).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+        }
+        for (int i = 0; i < powerUps.size(); i++) {
+            graphics.drawImage(powerUps.get(i).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+        }
+        for (int i = 0; i < animations.size(); i++) {
+            graphics.drawImage(animations.get(i).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
         }
         graphics.drawImage(foreground, 0, 0, this.getWidth(), this.getHeight(), null);
         graphics.setColor(Color.WHITE);
@@ -480,6 +522,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     }
 
     public void gameOver(Moveable player, int code) {
+        if (isGameOver) return;
+        onGameOver();
         frame.dispose();
         System.out.println("THIS GAME IS OVER");
         isGameOver = true;
@@ -488,16 +532,15 @@ public class Display extends JPanel implements KeyListener, WindowListener {
             try {
                 if (isServer) {
                     server.send(createGameInfo());
-                    //  server.stop();
+                    server.stop();
                 } else {
                     client.send(createGameInfo());
-                    //  client.stop();
+                    client.stop();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        onGameOver();
     }
 
     public void onGameOver() {

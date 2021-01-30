@@ -1,6 +1,6 @@
 import util.GameCreator;
 import visual.Display;
-import visual.ImageLoader;
+import util.ImageLoader;
 import visual.Moveable;
 import visual.PowerUp;
 import visual.moveable.Enemy;
@@ -19,14 +19,17 @@ public class Main extends Display {
         Moveable player;
         if (isMultiplayer()) {
             if (isServer()) {
-                player = new Enemy(50, 50, 1, 1, 4, this, null);
+                player = new Enemy(50, 50, 1, 1, 4, this, null, 0);
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN, this, false));
             } else
                 player = new Player(500, 500, -1, 1, 4, this, BYTE_PLAYER_MIN << 1);
         } else {
-            player = new Player(500, 500, -1, 1, 4, this, BYTE_PLAYER_MIN);
-            addMoveable(new Enemy(50, 50, 1, 1, 3, this, player));
+            player = new Player((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 3.5f, this, BYTE_PLAYER_MIN);
+            for (int i = 0; i < 1; i++)
+                addMoveable(new Enemy((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 3, this, player, i));
         }
+        player.lookAt(WIDTH / 2f, HEIGHT / 2f, 360);
+        player.lookAt(WIDTH / 2f, HEIGHT / 2f, 360);
         addMoveable(player);
 
         start();
@@ -35,13 +38,13 @@ public class Main extends Display {
     @Override
     public void onUpdate(int tick) {
         if (!isMultiplayer() || isServer()) {
-            if (Math.random() < 0.0005) {
+            if (Math.random() < 0.0001) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN, this, false));
             } else if (Math.random() < 0.0001) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 1, this, false));
             } else if (Math.random() < 0.0005) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 2, this, false));
-            } else if (Math.random() < 0.0005) {
+            } else if (Math.random() < 0.01) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 3, this, false));
             }
         }
@@ -49,8 +52,8 @@ public class Main extends Display {
 
     @Override
     public void onGameOver() {
-        System.out.println("Main Game Over");
-        new Main(getGameCreator());
+        if (isRunning())
+            new Main(getGameCreator());
     }
 
     public static void main(String[] args) {

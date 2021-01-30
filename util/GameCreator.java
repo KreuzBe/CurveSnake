@@ -38,11 +38,13 @@ public class GameCreator {
             server.stop();
             server = null;
         }
-        if (frame != null) try {
+
+        if (frame != null && frame.isActive()) {
+            frame.setVisible(false);
             frame.dispose();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
         }
+
+
         frame = new JFrame();
 
         JTabbedPane tabbedPane;

@@ -1,64 +1,46 @@
 package visual;
 
+import util.ImageLoader;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
-import java.util.ArrayList;
 
-public class Moveable {
+public class Moveable extends VisualObject {
 
+    private int maxGap = 0;
     private int gap = 0;
 
-    private BufferedImage trace;
-    private Graphics2D traceGraphics;
     private Color traceColor = Color.GREEN;
-    private float x, y;
+    private BufferedImage rocketImage;
     private float vx, vy;
     private float speed;
-    private boolean decay = false;
-    private int life = -1;
     private boolean isVisible = true;
     private boolean remoteControlled = false;
     private float lastX, lastY;
+    private int score = 0;
 
-
-    private Display display;
-
-    public boolean isRemoteControlled() {
-        return remoteControlled;
-    }
-
-    public void setRemoteControlled(boolean remoteControlled) {
-        this.remoteControlled = remoteControlled;
-    }
-
-    private int drawByte = 0b0;
     private int enemyBytes = Display.BYTE_WALL;
 
     int radius = 10;
 
+
     public Moveable(float x, float y, float vx, float vy, float speed, Display display, int drawByte) {
-        this.x = this.lastX = x;
-        this.y = this.lastY = y;
+        super(display, x, y, drawByte);
+        this.lastX = x;
+        this.lastY = y;
         this.vx = vx;
         this.vy = vy;
         this.speed = speed;
-        this.drawByte = drawByte;
-
-        this.display = display;
+        this.rocketImage = ImageLoader.images[4];
         clear();
         setInvisibleTicks(50);
         simplifyVector();
     }
 
-    public void clear() {
-        trace = new BufferedImage(Display.WIDTH, Display.HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        traceGraphics = trace.createGraphics();
-    }
 
     public void lookAt(float lx, float ly, int maxAngle) {
-        double dx = lx - x;
-        double dy = ly - y;
+        double dx = lx - getX();
+        double dy = ly - getY();
         double angleTarget = Math.atan(dy / dx);
         double angleMove = Math.atan(this.getVY() / this.getVX());
         double deltaAngle = deltaAngle = angleTarget - angleMove;
@@ -75,8 +57,8 @@ public class Moveable {
     }
 
     public void lookAway(float lx, float ly, int maxAngle) {
-        double dx = lx - x;
-        double dy = ly - y;
+        double dx = lx - getX();
+        double dy = ly - getY();
         double angleTarget = Math.atan(dy / dx);
         double angleMove = Math.atan(this.getVY() / this.getVX());
         double deltaAngle = deltaAngle = angleTarget - angleMove;
@@ -95,85 +77,92 @@ public class Moveable {
     }
 
     public void update(int tick) throws Exception {
-        // if (!isRemoteControlled()) {
-        x += vx * speed;
-        y += vy * speed;
-        //}
-
+        move();
+        super.update(tick);
         // gaps:
         if (!isVisible()) {
             if (gap == 0) {
                 setVisible(true);
+                maxGap = 0;
             } else {
                 gap--;
             }
         } else if (Math.random() < 0.01) {
-            setVisible(false);
-            gap = 15;
+            setInvisibleTicks(15);
         }
 
 
-        if (life > 0)
-            life--;
-        else if (life == 0)
-            decay = true;
-
-        if (x < 0 || y < 0 || x > Display.WIDTH || y > Display.HEIGHT) {
+        if (getX() < 0 || getY() < 0 || getX() > Display.WIDTH || getY() > Display.HEIGHT) {
             onCrash(0);
         }
 
-        int[][] map = display.getMap();
+        int[][] map = getDisplay().getMap();
 
-        if ((map[(int) x][(int) y] & Display.BYTE_POWERUP) != 0) {
-            PowerUp.activatePowerUp(this, map[(int) x][(int) y]);
+        if (((getDrawByte() & (Display.BYTE_PLAYER | Display.BYTE_NPC)) != 0) && (map[(int) getX()][(int) getY()] & Display.BYTE_POWERUP) != 0) {
+            PowerUp.activatePowerUp(this, map[(int) getX()][(int) getY()]);
         }
 
 
         if (!isVisible) {
-            lastX = x;
-            lastY = y;
+            lastX = getX();
+            lastY = getY();
             return;
         }
         try {
-            if ((map[(int) x][(int) y] & enemyBytes) != 0) {
-                onCrash(map[(int) x][(int) y]);
+            if ((map[(int) getX()][(int) getY()] & enemyBytes) != 0) {
+                onCrash(map[(int) getX()][(int) getY()]);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
-                if (i * i + j * j < radius * radius)
-                    try {
-                        getDisplay().setMapByte(((int) (x - getVX() * radius)) + i, ((int) (y - getVY() * radius)) + j, drawByte);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        if (getDrawByte() != 0b0)
+            for (int i = -radius; i <= radius; i++) {
+                for (int j = -radius; j <= radius; j++) {
+                    if (i * i + j * j < radius * radius)
+                        try {
+                            getDisplay().setMapByte(((int) (getX() - getVX() * radius)) + i, ((int) (getY() - getVY() * radius)) + j, getDrawByte());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
             }
-        }
 
 
+    }
+
+    public void move() {
+        setX(getX() + getVX() * getSpeed());
+        setY(getY() + getVY() * getSpeed());
     }
 
     public void paint(int tick) {
         getDisplay().fg.setColor(traceColor);
-        getDisplay().fg.fillOval((int) (getX() - radius), (int) (getY() - radius), 2 * radius, 2 * radius);
+        float angle = (float) (Math.atan(vy / vx) - Math.PI / 2 + (vx < 0 ? 0 : Math.PI));
+        ImageLoader.drawRotatedImage(rocketImage, (int) (getX() - 2 * radius), (int) (getY() - 2 * radius), 4 * radius, 4 * radius, angle, (Graphics2D) getDisplay().fg);
+
+        if (gap > 0 && maxGap > 15) {
+            getDisplay().fg.setColor(Color.DARK_GRAY);
+            getDisplay().fg.fillRect((int) getX() - 2 * radius, (int) getY() - 30, 4 * radius, 10);
+            getDisplay().fg.setColor(Color.GREEN);
+            getDisplay().fg.fillRect((int) (getX() - 2 * radius + (4 * radius * (1 - 1d * gap / maxGap))), (int) getY() - 30, (int) (4 * radius * (1d * gap / maxGap)), 10);
+        }
         if (!isVisible) {
             return;
         }
-        traceGraphics.setColor(traceColor);
+        getGraphics().setColor(traceColor);
         if (isRemoteControlled()) {
-            traceGraphics.setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
-            traceGraphics.drawLine((int) x, (int) y, (int) lastX, (int) lastY);
-            lastX = x;
-            lastY = y;
+            getGraphics().setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
+            getGraphics().drawLine((int) getX(), (int) getY(), (int) lastX, (int) lastY);
+            lastX = getX();
+            lastY = getY();
             return;
         }
         for (int i = 0; i < getSpeed(); i++) {
-            traceGraphics.fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
+            getGraphics().fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
         }
     }
+
 
     public void onCrash(int code) {
         System.out.print(this + " was killed by ");
@@ -211,33 +200,22 @@ public class Moveable {
         }
     }
 
-    public boolean shouldDecay() {
-        return decay;
+    public int getGap() {
+        return gap;
     }
 
-    public void decay() {
-        decay = true;
+    public int getMaxGap() {
+        return maxGap;
     }
 
-    public void setlife(int life) {
-        this.life = life;
+    public void setGap(int gap) {
+        this.gap = gap;
     }
 
-    public float getX() {
-        return x;
+    public void setMaxGap(int maxGap) {
+        this.maxGap = maxGap;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
 
     public float getVX() {
         return vx;
@@ -269,25 +247,10 @@ public class Moveable {
 
     public void setVisible(boolean visible) {
         this.isVisible = visible;
-        lastX = x;
-        lastY = y;
+        lastX = getX();
+        lastY = getY();
     }
 
-    public Display getDisplay() {
-        return display;
-    }
-
-    public void setDisplay(Display display) {
-        this.display = display;
-    }
-
-    public void setDrawByte(int b) {
-        drawByte = b;
-    }
-
-    public int getDrawByte() {
-        return drawByte;
-    }
 
     public void addEnemyByte(int b) {
         enemyBytes |= b;
@@ -299,14 +262,6 @@ public class Moveable {
 
     public void removeEnemyByte(int b) {
         enemyBytes &= ~b;
-    }
-
-    public BufferedImage getImage() {
-        return trace;
-    }
-
-    public Graphics2D getGraphics() {
-        return traceGraphics;
     }
 
     public void setTraceColor(Color color) {
@@ -328,6 +283,34 @@ public class Moveable {
     protected void setInvisibleTicks(int gap) {
         setVisible(false);
         this.gap += gap;
+        if (this.gap > maxGap)
+            maxGap = gap;
     }
+
+    public void addToScore(int value) {
+        score += value;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public BufferedImage getRocketImage() {
+        return rocketImage;
+    }
+
+    public void setRocketImage(BufferedImage rocketImage) {
+        this.rocketImage = rocketImage;
+    }
+
+    public boolean isRemoteControlled() {
+        return remoteControlled;
+    }
+
+    public void setRemoteControlled(boolean remoteControlled) {
+        this.remoteControlled = remoteControlled;
+    }
+
+
 }
 
