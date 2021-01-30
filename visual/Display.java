@@ -373,10 +373,10 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     }
 
     private void handleInput(Object obj) {
-        System.out.println("received: " + obj);
         if (obj instanceof GameInfo) {
             GameInfo gi = (GameInfo) obj;
             if (gi.stop) {
+                System.out.println("RECEIVED STOP");
                 gameOver(null, 0);
                 return;
             }
@@ -422,6 +422,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                     moveable.setVisible(oc.isVisible);
                 }
             }
+        } else {
+            gameOver(null, 0);
         }
     }
 
@@ -551,9 +553,11 @@ public class Display extends JPanel implements KeyListener, WindowListener {
             try {
                 if (isServer) {
                     server.send(createGameInfo());
+                    server.send(-1);
                     server.stop();
                 } else {
                     client.send(createGameInfo());
+                    client.send(-1);
                     client.stop();
                 }
             } catch (IOException e) {
