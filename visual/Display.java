@@ -557,11 +557,11 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 if (isServer) {
                     server.send(createGameInfo());
                     server.send(-1);
-                    server.stop();
+                    //    server.stop();
                 } else {
                     client.send(createGameInfo());
                     client.send(-1);
-                    client.stop();
+                    //   client.stop();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
