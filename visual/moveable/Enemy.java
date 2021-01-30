@@ -60,12 +60,18 @@ public class Enemy extends Moveable {
         int x, y;
         if (target instanceof Moveable) {
             Moveable mTarget = ((Moveable) target);
-            x = (int) (target.getX() + scale * mTarget.getVX()) / scale;
-            y = (int) (target.getY() + scale * mTarget.getVY()) / scale;
+			int dst = 2;
+			do {
+				x = (int) (target.getX() + dst * scale * mTarget.getVX()) / scale;
+				y = (int) (target.getY() + dst * scale * mTarget.getVY()) / scale;
+				dst++;
+			} while( x > 0 && y > 0 && x < Display.WIDTH && y < Display.HEIGHT && (map[x][y] & getEnemyBytes()) == 0 && dst <= 50 );
         } else {
             x = (int) target.getX() / scale;
             y = (int) target.getY() / scale;
         }
+
+		
         Node node = new Node(x, y, 0, Math.sqrt(((x - tx) * (x - tx) + (y - ty) * (y - ty))), null);
         openNodes.add(node);
 
@@ -74,7 +80,7 @@ public class Enemy extends Moveable {
             n.way = 0; // I dont care about the way, could be Integer.MAX_VALUE
             n.distance = Math.sqrt(((n.x - tx) * (n.x - tx) + (n.y - ty) * (n.y - ty)));
             n.prevNode = null;
-            //   openNodes.add(n);
+         //      openNodes.add(n);
         }
         avoidNext.clear();
 
@@ -233,7 +239,7 @@ public class Enemy extends Moveable {
         int[][] map = getDisplay().getMap();
         try {
             if ((map[((int) (getX() + getVX() * getSpeed()))][(int) (getY() + getVY() * getSpeed())] & getEnemyBytes()) != 0) {
-                setGap(30);
+                setGap(10);
                 if (getGap() > getMaxGap()) {
                     setVisible(false);
                     setMaxGap(getGap());

@@ -39,8 +39,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     public static final int DEFAULT_PORT = 4444;
 
     private static final Toolkit TOOLKIT = Toolkit.getDefaultToolkit();
-    public static final int WIDTH = 1600;
-    public static final int HEIGHT = 900;
+    public static final int WIDTH = 3200;
+    public static final int HEIGHT = 1800;
 
     protected static final Color bgColor = new Color(0x220033);
 
