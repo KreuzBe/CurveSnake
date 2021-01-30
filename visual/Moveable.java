@@ -153,8 +153,9 @@ public class Moveable extends VisualObject {
         }
         getGraphics().setColor(traceColor);
         if (isRemoteControlled()) {
-           // getGraphics().setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
+            // getGraphics().setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
             //getGraphics().drawLine((int) getX(), (int) getY(), (int) lastX, (int) lastY);
+            lookAway(lastX, lastY, 360);
             lastX = getX();
             lastY = getY();
             //   return;
