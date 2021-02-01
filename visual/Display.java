@@ -58,7 +58,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     private boolean[] keysOld = new boolean[256];
 
     private final int scale = 10;
-    private final int border = 20;
+    private final int border = 10;
     private int[][] map; // maps the lines
     private int[][] scaledMap;
 
@@ -72,6 +72,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     private boolean isGameOver = false;
 
     private GameCreator gc;
+
+    Thread paintThread;
 
     public Display(GameCreator gc) {
         GameCreator.createGame(gc, this::initGame);
@@ -100,6 +102,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         removedPowerUps = new ArrayList<PowerUp>();
         animations = new ArrayList<Animation>();
         removedAnimations = new ArrayList<Animation>();
+
+        paintThread = new Thread(this::paintMe);
 
         loop = new Loop(60, this::update);
 
@@ -185,10 +189,17 @@ public class Display extends JPanel implements KeyListener, WindowListener {
 
 
 //paint
-        paintMe(tick);
+        //   paintMe(tick);
+        if (!paintThread.isAlive())
+            paintThread.run();
 
         System.arraycopy(keys, 0, keysOld, 0, keys.length);
 
+    }
+
+    private void paintMe() {
+        paintMe(0);
+        paintThread.interrupt();
     }
 
     private void paintMe(int tick) {
@@ -227,8 +238,6 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         }
         powerUps.removeAll(removedPowerUps);
         removedPowerUps.clear();
-
-
         repaint();
     }
 

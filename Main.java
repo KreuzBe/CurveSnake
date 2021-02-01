@@ -24,9 +24,9 @@ public class Main extends Display {
             } else
                 player = new Player(500, 500, -1, 1, 4, this, BYTE_PLAYER_MIN << 1);
         } else {
-            player = new Player((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 4.5f, this, BYTE_PLAYER_MIN);
+            player = new Player((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 5f, this, BYTE_PLAYER_MIN);
             for (int i = 0; i < 1; i++)
-                addMoveable(new Enemy((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 4, this, player, i));
+                addMoveable(new Enemy((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 4f, this, player, i));
         }
         player.lookAt(WIDTH / 2f, HEIGHT / 2f, 360);
         player.lookAt(WIDTH / 2f, HEIGHT / 2f, 360);
