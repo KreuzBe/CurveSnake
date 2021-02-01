@@ -272,14 +272,7 @@ public class Enemy extends Moveable implements Serializable {
 
     }
 
-    @Override
-    public void paint(int tick) {
-        super.paint(tick);
-        Graphics g = getDisplay().fg;
-        g.setColor(Color.WHITE);
-        g.drawString("> " + pathFindLoop.getLastUps(), (int) getX() - 10, (int) getY() - 30);
-    }
-
+  
     @Override
     public void onCrash(int code) {
         if (isRemoteControlled()) {
