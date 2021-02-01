@@ -404,6 +404,7 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                     }
                 }
                 if (powerUp == null) createPowerUp(pu);
+                pu.setDisplay(this);
             }
 
 
@@ -423,7 +424,9 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 }
                 if (moveable == null) {
                     addMoveable(m);
+                    m.setDisplay(this);
                 } else {
+                    moveable.setDisplay(this);
                     moveable.setX(m.getX());
                     moveable.setY(m.getY());
                     moveable.setVX(m.getVX());
