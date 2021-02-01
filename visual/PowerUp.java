@@ -111,4 +111,8 @@ public class PowerUp extends VisualObject implements Serializable {
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);
         }
     }
+
+    public PowerUp copy() {
+        return new PowerUp(this.getX(), this.getY(), this.getRadius(), this.getDrawByte(), this.getDisplay(), this.isRemoteControlled());
+    }
 }
