@@ -282,6 +282,10 @@ public class Enemy extends Moveable implements Serializable {
 
     @Override
     public void onCrash(int code) {
+        if (isRemoteControlled()) {
+            super.onCrash(0);
+            return;
+        }
         if ((code & Display.BYTE_WALL) == 0) {
             die();
         }

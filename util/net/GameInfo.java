@@ -25,7 +25,7 @@ public class GameInfo implements Serializable {
     }
 
     public void addPowerUp(PowerUp p) {
-        powerups.add((PowerUp) p.copy());
+        powerups.add(p.copy());
     }
 
     public static class ObjectContainer implements Serializable {
