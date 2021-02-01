@@ -142,6 +142,8 @@ public class Moveable extends VisualObject implements Serializable {
     public void paint(int tick) {
         getDisplay().fg.setColor(traceColor);
         float angle = (float) (Math.atan(vy / vx) - Math.PI / 2 + (vx < 0 ? 0 : Math.PI));
+        if (rocketImage == null)
+            rocketImage = ImageLoader.images[4];
         ImageLoader.drawRotatedImage(rocketImage, (int) (getX() - 2 * radius), (int) (getY() - 2 * radius), 4 * radius, 4 * radius, angle, (Graphics2D) getDisplay().fg);
 
         if (gap > 0 && maxGap > 15) {
