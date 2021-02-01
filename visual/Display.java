@@ -358,6 +358,9 @@ public class Display extends JPanel implements KeyListener, WindowListener {
 
     public GameInfo createGameInfo() {
         GameInfo gi = new GameInfo();
+        gi.stop = isGameOver;
+        if (gi.stop)
+            return gi;
         for (Moveable mo : moveables) {
             if (!mo.isRemoteControlled()) {
                 mo.simplifyVector();
@@ -370,7 +373,6 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 gi.addPowerUp(p);
             }
         }
-        gi.stop = isGameOver;
         return gi;
     }
 
