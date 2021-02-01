@@ -84,9 +84,11 @@ public class Display extends JPanel implements KeyListener, WindowListener {
             isServer = gc.isServer();
             if (isServer) {
                 this.server = gc.getServer();
+                server.setDisplay(this);
                 server.setInputConsumer(this::handleInput);
             } else {
                 this.client = gc.getClient();
+                client.setDisplay(this);
                 client.setInputConsumer(this::handleInput);
             }
             System.out.println(server + "(" + isServer + ") / " + client);
