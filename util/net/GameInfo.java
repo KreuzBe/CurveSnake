@@ -21,11 +21,19 @@ public class GameInfo implements Serializable {
     //}
 
     public void addMoveable(Moveable mo) {
-        moveables.add(mo);
+        try {
+            moveables.add((Moveable) mo.copy());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addPowerUp(PowerUp p) {
-        powerups.add(p);
+        try {
+            powerups.add((PowerUp) p.copy());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class ObjectContainer implements Serializable {

@@ -123,4 +123,8 @@ public class VisualObject implements Serializable {
         return image;
     }
 
+    public VisualObject copy() throws CloneNotSupportedException {
+        return (VisualObject) this.clone();
+    }
+
 }
