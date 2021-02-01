@@ -6,8 +6,9 @@ import visual.animation.LineCleared;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Moveable extends VisualObject {
+public class Moveable extends VisualObject implements Serializable {
 
     private int maxGap = 0;
     private int gap = 0;

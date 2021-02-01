@@ -7,8 +7,9 @@ import visual.moveable.Player;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class PowerUp extends VisualObject {
+public class PowerUp extends VisualObject implements Serializable {
 
     private int radius;
     private int imageNumber;
