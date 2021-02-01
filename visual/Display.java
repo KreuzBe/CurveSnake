@@ -192,7 +192,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
     private void paintMe(int tick) {
         foreground = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         fg = foreground.createGraphics();
-        for (Moveable mo : moveables) {
+        for (int i = 0; i < moveables.size(); i++) {
+            Moveable mo = moveables.get(i);
             try {
                 mo.paint(tick);
             } catch (Exception e) {
