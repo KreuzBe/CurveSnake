@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class VisualObject implements Serializable {
 
-    private static final HashMap<Integer, VisualObject> INSTANCES = new HashMap<>();
+    //private static final HashMap<Integer, VisualObject> INSTANCES = new HashMap<>();
 
     private Display display;
     private float x, y;
@@ -20,7 +20,7 @@ public class VisualObject implements Serializable {
     private Graphics2D graphics;
 
     public VisualObject(Display display, float x, float y, int drawByte) {
-        INSTANCES.put(drawByte, this);
+        //  INSTANCES.put(drawByte, this);
         this.display = display;
         this.x = x;
         this.y = y;
@@ -29,7 +29,7 @@ public class VisualObject implements Serializable {
     }
 
     public void kill() {
-        INSTANCES.remove(drawByte);
+        //      INSTANCES.remove(drawByte);
     }
 
     public void update(int tick) throws Exception {
@@ -72,14 +72,14 @@ public class VisualObject implements Serializable {
     }
 
     public void setDrawByte(int drawByte) {
-        INSTANCES.remove(getDrawByte());
+        //  INSTANCES.remove(getDrawByte());
         this.drawByte = drawByte;
-        INSTANCES.put(drawByte, this);
+        // INSTANCES.put(drawByte, this);
     }
 
-    public static VisualObject getByDrawByte(int drawByte) {
-        return INSTANCES.get(drawByte);
-    }
+    //public static VisualObject getByDrawByte(int drawByte) {
+    //return INSTANCES.get(drawByte);
+    //}
 
     public int getLife() {
         return life;
@@ -124,7 +124,7 @@ public class VisualObject implements Serializable {
     }
 
 
-    public void removeGraphics(){
+    public void removeGraphics() {
         graphics = null;
         image = null;
     }
