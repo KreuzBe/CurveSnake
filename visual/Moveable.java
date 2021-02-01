@@ -327,6 +327,7 @@ public class Moveable extends VisualObject implements Serializable {
 
     public Moveable copy() {
         Moveable ret = new Moveable(getX(), getY(), getVX(), getVY(), getSpeed(), null, getDrawByte());
+        ret.setRocketImage(null);
         ret.removeGraphics();
         ret.setVisible(isVisible());
         ret.setGap(getGap());
