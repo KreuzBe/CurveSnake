@@ -422,7 +422,9 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 if (moveable == null) {
                     addMoveable(m);
                     m.setDisplay(this);
+                    m.setRemoteControlled(true);
                 } else {
+                    moveable.setRemoteControlled(true);
                     moveable.setDisplay(this);
                     moveable.setX(m.getX());
                     moveable.setY(m.getY());
