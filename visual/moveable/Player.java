@@ -1,13 +1,14 @@
 package visual.moveable;
 
-import java.awt.*;
-import java.awt.event.*;
-
 import util.ImageLoader;
-import visual.Moveable;
 import visual.Display;
+import visual.Moveable;
 
-public class Player extends Moveable {
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.Serializable;
+
+public class Player extends Moveable implements Serializable {
 
 
     public Player(float x, float y, float vx, float vy, float speed, Display display, int drawByte) {

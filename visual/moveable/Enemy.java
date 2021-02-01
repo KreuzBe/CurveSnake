@@ -8,9 +8,10 @@ import visual.VisualObject;
 import visual.animation.LineCleared;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Enemy extends Moveable {
+public class Enemy extends Moveable implements Serializable {
 
     private VisualObject target;
     private Moveable mainTarget;
