@@ -155,6 +155,8 @@ public class Moveable extends VisualObject implements Serializable {
         if (!isVisible) {
             return;
         }
+        if (getGraphics() == null)
+            clear();
         getGraphics().setColor(traceColor);
         if (isRemoteControlled()) {
             getGraphics().setStroke(new BasicStroke(radius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, radius));
