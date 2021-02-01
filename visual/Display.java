@@ -212,7 +212,8 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         animations.removeAll(removedAnimations);
         removedAnimations.clear();
 
-        for (PowerUp p : powerUps) {
+        for (int i = 0; i < powerUps.size(); i++) {
+            PowerUp p = powerUps.get(i);
             try {
                 p.update(tick);
             } catch (Exception e) {

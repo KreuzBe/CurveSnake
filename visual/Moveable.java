@@ -340,6 +340,4 @@ public class Moveable extends VisualObject implements Serializable {
         ret.setRemoteControlled(isRemoteControlled());
         return ret;
     }
-
 }
-

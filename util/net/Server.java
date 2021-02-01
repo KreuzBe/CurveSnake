@@ -75,7 +75,7 @@ public class Server {
         isRunning = true;
         while (clientSocket.isConnected()) {
             try {
-                if (inputConsumer != null) {
+                if (inputConsumer != null && !serverSocket.isClosed()) {
                     inputConsumer.accept(in.readObject());
                 }
             } catch (IOException | ClassNotFoundException e) {
