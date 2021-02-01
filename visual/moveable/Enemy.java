@@ -42,10 +42,16 @@ public class Enemy extends Moveable implements Serializable {
 
     private void loopAction(int tick) {
         try {
+            if (getX() < 0 || getY() < 0 || getX() > Display.WIDTH || getY() > Display.HEIGHT) {
+                onCrash(0);
+                return;
+            }
             if (target != null)
                 pathFind();
+
         } catch (Exception e) {
             e.printStackTrace();
+
         }
     }
 
