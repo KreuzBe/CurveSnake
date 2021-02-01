@@ -2,9 +2,10 @@ package visual;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class VisualObject {
+public class VisualObject implements Serializable {
 
     private static final HashMap<Integer, VisualObject> INSTANCES = new HashMap<>();
 

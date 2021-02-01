@@ -1,6 +1,7 @@
 package visual;
 
 import util.ImageLoader;
+import visual.animation.Explosion;
 import visual.animation.LineCleared;
 
 import java.awt.*;
@@ -160,6 +161,7 @@ public class Moveable extends VisualObject {
             return;
         }
         for (int i = 0; i < getSpeed(); i++) {
+            getGraphics().setColor(traceColor);
             getGraphics().fillOval((int) (getX() - i * getVX()) - 5, (int) (getY() - i * getVY()) - 5, radius, radius);
         }
     }
@@ -177,8 +179,10 @@ public class Moveable extends VisualObject {
         } else {
             System.out.println("something I dont know... what could that be? Are these... aliens?");
         }
-        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 50, 100, getTraceColor()));
-        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 50, 100, getTraceColor()));
+        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 30, 100, getTraceColor()));
+        getDisplay().addAnimation(new LineCleared(getDisplay(), getX(), getY(), 0b0, 30, 100, getTraceColor()));
+        getDisplay().addAnimation(new Explosion(getDisplay(), getX(), getY(), 0, 10, 200));
+        getDisplay().addAnimation(new Explosion(getDisplay(), getX(), getY(), 0, 10, 200));
         getDisplay().gameOver(this, code);
     }
 

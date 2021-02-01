@@ -26,7 +26,7 @@ public class Main extends Display {
         } else {
             player = new Player((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 5.5f, this, BYTE_PLAYER_MIN);
             for (int i = 0; i < 1; i++)
-                addMoveable(new Enemy((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 4, this, player, i));
+                addMoveable(new Enemy((int) (WIDTH * Math.random()), (int) (HEIGHT * Math.random()), -1, 1, 5, this, player, i));
         }
         player.lookAt(WIDTH / 2f, HEIGHT / 2f, 360);
         player.lookAt(WIDTH / 2f, HEIGHT / 2f, 360);
@@ -38,14 +38,16 @@ public class Main extends Display {
     @Override
     public void onUpdate(int tick) {
         if (!isMultiplayer() || isServer()) {
-            if (Math.random() < 0.0001) {
+            if (Math.random() < 0.0005) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN, this, false));
-            } else if (Math.random() < 0.0001) {
-                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 1, this, false));
             } else if (Math.random() < 0.0005) {
+                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 1, this, false));
+            } else if (Math.random() < 0.001) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 2, this, false));
-            } else if (Math.random() < 0.0001) {
+            } else if (Math.random() < 0.0005) {
                 createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 3, this, false));
+            } else if (Math.random() < 0.0005) {
+                createPowerUp(new PowerUp((float) (Math.random() * (WIDTH - 60) + 30), (float) (Math.random() * (HEIGHT - 60) + 30), 30, BYTE_POWERUP_MIN << 4, this, false));
             }
         }
     }

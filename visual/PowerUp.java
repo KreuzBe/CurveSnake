@@ -18,6 +18,7 @@ public class PowerUp extends VisualObject {
         super(display, x, y, drawByte);
         this.radius = radius;
         this.imageNumber = ((int) (Math.log(drawByte) / Math.log(2)) - 1); //
+        if (imageNumber > 3) imageNumber = 3;
         this.isRemoteControlled = isRemoteControlled;
     }
 
@@ -86,8 +87,8 @@ public class PowerUp extends VisualObject {
             moveable.getDisplay().addAnimation(new LineCleared(moveable.getDisplay(), moveable.getX(), moveable.getY(), 0b0, 100, 100, moveable.getTraceColor()));
             moveable.getDisplay().removePowerUp(code & Display.BYTE_POWERUP);
         }
-        if ((code & (Display.BYTE_POWERUP_MIN << 3)) != 0) { // bomb
-            int radius = (int) (100 + Math.random() * 100);
+        if ((code & ((Display.BYTE_POWERUP_MIN << 3) | (Display.BYTE_POWERUP << 4))) != 0) { // bomb
+            int radius = (int) (100 + Math.random() * 200);
             for (Moveable mo : moveable.getDisplay().getMoveables()) {
                 Composite defaultComposite = mo.getGraphics().getComposite();
                 mo.getGraphics().setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.001f));

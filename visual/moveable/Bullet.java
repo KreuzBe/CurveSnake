@@ -29,7 +29,7 @@ public class Bullet extends Moveable {
             move();
         }
 
-        if ((getDisplay().getMap()[(int) getX()][(int) getY()] & (Display.BYTE_PLAYER | Display.BYTE_NPC | Display.BYTE_WALL)) != 0) {
+        if ((getDisplay().getMap()[(int) getX()][(int) getY()] & (Display.BYTE_PLAYER | Display.BYTE_NPC)) != 0) {
             int radius = (int) (20 + Math.random() * 30);
             for (Moveable mo : getDisplay().getMoveables()) {
                 Composite defaultComposite = mo.getGraphics().getComposite();
@@ -48,6 +48,9 @@ public class Bullet extends Moveable {
                 }
             }
             getDisplay().addAnimation(new Explosion(getDisplay(), getX(), getY(), 0, 10, 2 * radius));
+            //decay();
+        }
+        if ((getDisplay().getMap()[(int) getX()][(int) getY()] & (Display.BYTE_WALL)) != 0) {
             decay();
         }
 

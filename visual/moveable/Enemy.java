@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Enemy extends Moveable {
 
     private VisualObject target;
-    private final Moveable mainTarget;
+    private Moveable mainTarget;
     private final int scale;
     private final ArrayList<Node> avoidNext = new ArrayList<Node>();
     private final Loop pathFindLoop;
@@ -33,6 +33,10 @@ public class Enemy extends Moveable {
 
     public void setTarget(VisualObject mo) {
         target = mo;
+    }
+
+    public void setMainTarget(Moveable mainTarget) {
+        this.mainTarget = mainTarget;
     }
 
     private void loopAction(int tick) {

@@ -359,13 +359,13 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         for (Moveable mo : moveables) {
             if (!mo.isRemoteControlled()) {
                 mo.simplifyVector();
-                gi.addMoveable(mo.getX(), mo.getY(), mo.getVX(), mo.getVY(), mo.getSpeed(), mo.getDrawByte(), mo.getEnemyBytes(), mo.isVisible());
+                gi.addMoveable(mo);
             }
         }
 
         for (PowerUp p : powerUps) {
             if (!p.isRemoteControlled()) {
-                gi.addPowerUp(p.getX(), p.getY(), p.getRadius(), p.getDrawByte());
+                gi.addPowerUp(p);
             }
         }
         gi.stop = isGameOver;
@@ -381,55 +381,98 @@ public class Display extends JPanel implements KeyListener, WindowListener {
                 return;
             }
 
-            for (GameInfo.ObjectContainer pu : gi.powerups) {
+//            for (GameInfo.ObjectContainer pu : gi.powerups) {
+//                PowerUp powerUp = null;
+//                for (PowerUp p : powerUps) {
+//                    if (p.isRemoteControlled() && p.getDrawByte() == pu.drawByte) {
+//                        powerUp = p;
+//                        break;
+//                    }
+//                }
+//                if (powerUp == null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
+//            }
+            for (PowerUp pu : gi.powerups) {
                 PowerUp powerUp = null;
                 for (PowerUp p : powerUps) {
-                    if (p.isRemoteControlled() && p.getDrawByte() == pu.drawByte) {
+                    if (p.isRemoteControlled() && p.getDrawByte() == pu.getDrawByte()) {
                         powerUp = p;
                         break;
                     }
                 }
-                if (powerUp == null) createPowerUp(new PowerUp(pu.x, pu.y, pu.radius, pu.drawByte, this, true));
+                if (powerUp == null) createPowerUp(pu);
             }
 
 
-            for (GameInfo.ObjectContainer oc : gi.moveables) {
+            for (Moveable m : gi.moveables) {
                 Moveable moveable = null;
                 for (Moveable mo : addedMoveables) {
-                    if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
+                    if (mo.isRemoteControlled() && mo.getDrawByte() == m.getDrawByte()) {
                         moveable = mo;
                         break;
                     }
                 }
                 for (Moveable mo : moveables) {
-                    if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
+                    if (mo.isRemoteControlled() && mo.getDrawByte() == m.getDrawByte()) {
                         moveable = mo;
                         break;
                     }
                 }
                 if (moveable == null) {
-                    moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
-                    moveable.setVisible(oc.isVisible);
-                    moveable.setRemoteControlled(true);
-                    moveable.addEnemyByte(oc.enemyByte);
-                    moveable.setTraceColor(Color.RED);
-                    addMoveable(moveable);
+                    addMoveable(m);
                 } else {
-                    moveable.setX(oc.x);
-                    moveable.setY(oc.y);
-                    moveable.setVX(oc.vx);
-                    moveable.setVY(oc.vy);
-                    moveable.setSpeed(oc.speed);
+                    moveable.setX(m.getX());
+                    moveable.setY(m.getY());
+                    moveable.setVX(m.getVX());
+                    moveable.setVY(m.getVY());
+                    moveable.setSpeed(m.getSpeed());
                     moveable.clearEnemyByte();
-                    moveable.addEnemyByte(oc.enemyByte);
-                    moveable.setVisible(oc.isVisible);
+                    moveable.addEnemyByte(m.getEnemyBytes());
+                    moveable.setVisible(m.isVisible());
                 }
             }
         } else {
             System.out.println("THAT IS NO GAME INFO");
             gameOver(null, 0);
         }
+
+
+//            for (GameInfo.ObjectContainer oc : gi.moveables) {
+//                Moveable moveable = null;
+//                for (Moveable mo : addedMoveables) {
+//                    if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
+//                        moveable = mo;
+//                        break;
+//                    }
+//                }
+//                for (Moveable mo : moveables) {
+//                    if (mo.isRemoteControlled() && mo.getDrawByte() == oc.drawByte) {
+//                        moveable = mo;
+//                        break;
+//                    }
+//                }
+//                if (moveable == null) {
+//                    moveable = new Moveable(oc.x, oc.y, oc.vx, oc.vy, oc.speed, this, oc.drawByte);
+//                    moveable.setVisible(oc.isVisible);
+//                    moveable.setRemoteControlled(true);
+//                    moveable.addEnemyByte(oc.enemyByte);
+//                    moveable.setTraceColor(Color.RED);
+//                    addMoveable(moveable);
+//                } else {
+//                    moveable.setX(oc.x);
+//                    moveable.setY(oc.y);
+//                    moveable.setVX(oc.vx);
+//                    moveable.setVY(oc.vy);
+//                    moveable.setSpeed(oc.speed);
+//                    moveable.clearEnemyByte();
+//                    moveable.addEnemyByte(oc.enemyByte);
+//                    moveable.setVisible(oc.isVisible);
+//                }
+//            }
+//        } else {
+//            System.out.println("THAT IS NO GAME INFO");
+//            gameOver(null, 0);
     }
+
 
     public boolean isRunning() {
         return loop.isRunning();
@@ -540,8 +583,6 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         do {
             paintMe(1);
             dsTime = (int) (gt - System.currentTimeMillis());
-            fg.setColor(Color.ORANGE);
-            fg.drawString("Meow in: " + (dsTime / 1000), 0, 30);
             repaint();
             try {
                 Thread.sleep((long) (1E3 / 60));

@@ -1,20 +1,31 @@
 package util.net;
 
+import visual.Moveable;
+import visual.PowerUp;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GameInfo implements Serializable {
 
-    public ArrayList<ObjectContainer> moveables = new ArrayList<ObjectContainer>();
-    public ArrayList<ObjectContainer> powerups = new ArrayList<ObjectContainer>();
+    public ArrayList<Moveable> moveables = new ArrayList<Moveable>();
+    public ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
     public boolean stop = false;
 
-    public void addMoveable(float x, float y, float vx, float vy, float speed, int drawByte, int enemyByte, boolean isVisible) {
-        moveables.add(new ObjectContainer(x, y, vx, vy, speed, drawByte, enemyByte, isVisible, 1));
+    // public void addMoveable(float x, float y, float vx, float vy, float speed, int drawByte, int enemyByte, boolean isVisible) {
+    // moveables.add(new ObjectContainer(x, y, vx, vy, speed, drawByte, enemyByte, isVisible, 1));
+    //}
+
+    // public void addPowerUp(float x, float y, int radius, int drawByte) {
+    // powerups.add(new ObjectContainer(x, y, 0, 0, 0, drawByte, 0, true, radius));
+    //}
+
+    public void addMoveable(Moveable mo) {
+        moveables.add(mo);
     }
 
-    public void addPowerUp(float x, float y, int radius, int drawByte) {
-        powerups.add(new ObjectContainer(x, y, 0, 0, 0, drawByte, 0, true, radius));
+    public void addPowerUp(PowerUp p) {
+        powerups.add(p);
     }
 
     public static class ObjectContainer implements Serializable {
