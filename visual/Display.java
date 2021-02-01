@@ -359,17 +359,13 @@ public class Display extends JPanel implements KeyListener, WindowListener {
         for (Moveable mo : moveables) {
             if (!mo.isRemoteControlled()) {
                 mo.simplifyVector();
-                mo.setDisplay(null);
                 gi.addMoveable(mo);
-                mo.setDisplay(this);
             }
         }
 
         for (PowerUp p : powerUps) {
             if (!p.isRemoteControlled()) {
-                p.setDisplay(null);
                 gi.addPowerUp(p);
-                p.setDisplay(this);
             }
         }
         gi.stop = isGameOver;
