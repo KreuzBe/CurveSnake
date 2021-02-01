@@ -123,4 +123,9 @@ public class VisualObject implements Serializable {
         return image;
     }
 
+
+    public void removeGraphics(){
+        graphics = null;
+    }
+
 }

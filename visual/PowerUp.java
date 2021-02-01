@@ -113,6 +113,8 @@ public class PowerUp extends VisualObject implements Serializable {
     }
 
     public PowerUp copy() {
-        return new PowerUp(this.getX(), this.getY(), this.getRadius(), this.getDrawByte(), null, this.isRemoteControlled());
+        PowerUp ret = new PowerUp(this.getX(), this.getY(), this.getRadius(), this.getDrawByte(), null, this.isRemoteControlled());
+        ret.removeGraphics();
+        return ret;
     }
 }
