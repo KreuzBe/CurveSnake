@@ -50,6 +50,7 @@ public class Enemy extends Moveable implements Serializable {
     }
 
     private void pathFind() {
+        if (isRemoteControlled()) return;
         if (getGap() > 50) {
             lookAt(target.getX(), target.getY(), 5);
             return;
@@ -211,7 +212,14 @@ public class Enemy extends Moveable implements Serializable {
 
     @Override
     public void update(int tick) {
-
+        if (isRemoteControlled()) {
+            try {
+                super.update(tick);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         if (getDisplay().getPowerUps().size() > 0) {
             float dst = Float.MAX_VALUE;
             PowerUp p = getDisplay().getPowerUps().get(0);
